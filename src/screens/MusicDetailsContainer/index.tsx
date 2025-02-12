@@ -9,22 +9,60 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {scale} from 'react-native-size-matters';
+import {
+  default as IconDownload,
+  default as IconPlus,
+} from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import IconPlus from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconDownload from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconDotsHorizontal from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconSuffle from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import IconPause from 'react-native-vector-icons/MaterialCommunityIcons';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import {PNG_IMG} from '../../constants/ImagesName';
 import {ScreenName} from '../../constants/ScreensNames';
 import {colors} from '../../styles/color';
+import {useEffect, useState} from 'react';
+import TrackPlayer, {
+  Capability,
+  State,
+  usePlaybackState,
+} from 'react-native-track-player';
+import IconPlay from 'react-native-vector-icons/AntDesign';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const MusicDetailsScreen = ({navigation, route}) => {
   const {selectedSong, songsList} = route.params || {};
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    setupPlayer();
+  }, []);
+
+  const playSong = async () => {
+    await TrackPlayer.play();
+    setPlaying(true);
+  };
+  const pauseSong = async () => {
+    await TrackPlayer.pause();
+    setPlaying(false);
+  };
+  const setupPlayer = async () => {
+    try {
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.updateOptions({
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+        ],
+        compactCapabilities: [Capability.Play, Capability.Pause],
+      });
+      await TrackPlayer.add(songsList);
+    } catch (error) {}
+  };
 
   const RestSongs = songsList.filter(item => item.id !== selectedSong.id);
   return (
@@ -128,7 +166,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
           title={selectedSong?.title}
           fontColor={colors.gray}
           fontStyle={{marginTop: scale(10), textAlign: 'center'}}
-          fontSize={13}
+          fontSize={(13)}
           fontWeight="600"
         />
       </View>
@@ -142,7 +180,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
         }}>
         <Image
           source={PNG_IMG.SPOTIFY_ICONS_PNG}
-          style={{height: 24, width: 24, resizeMode: 'contain'}}
+          style={{height: scale(24), width: scale(24), resizeMode: 'contain'}}
         />
         <ResponsiveText
           title="Made for you"
@@ -185,8 +223,8 @@ const MusicDetailsScreen = ({navigation, route}) => {
           <Image
             source={PNG_IMG.THREE_DOTS_PNG}
             style={{
-              height: 25,
-              width: 25,
+              height: scale(25),
+              width: scale(25),
               tintColor: colors.white,
               resizeMode: 'contain',
             }}
@@ -197,21 +235,37 @@ const MusicDetailsScreen = ({navigation, route}) => {
             source={PNG_IMG.SUFFLE_PNG}
             style={{
               tintColor: colors.white,
-              height: 40,
-              width: 40,
+              height: scale(35),
+              width: scale(35),
               resizeMode: 'contain',
             }}
           />
 
-          <View>
-            <Image
-              source={PNG_IMG.PLAY_BUTTON_PNG}
-              style={{
-                height: 40,
-                width: 40,
-                resizeMode: 'contain',
-              }}
-            />
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            {playing ? (
+              <TouchableOpacity activeOpacity={0.8} onPress={pauseSong}>
+                <Image
+                  source={PNG_IMG.PAUSE_PNG}
+                  style={{
+                    height: scale(30),
+                    width: scale(30),
+                    tintColor: colors.ButtonColor,
+                    marginLeft: scale(10),
+                  }}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity activeOpacity={0.8} onPress={playSong}>
+                <IconPlay
+                  name="play"
+                  size={scale(30)}
+                  style={{
+                    color: colors.ButtonColor,
+                    marginLeft: scale(10),
+                  }}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
@@ -255,10 +309,11 @@ const MusicDetailsScreen = ({navigation, route}) => {
                 </View>
               </View>
             </TouchableOpacity>
+            
             <View>
               <Image
                 source={PNG_IMG.THREE_DOTS_PNG}
-                style={{height: 24, width: 24, tintColor: colors.white}}
+                style={{height: scale(24), width: scale(24), tintColor: colors.white}}
               />
             </View>
           </View>
@@ -270,5 +325,8 @@ const MusicDetailsScreen = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   IconStyle: {width: scale(30)},
+  MusicControls: {
+    color: '#3ad943',
+  },
 });
 export default MusicDetailsScreen;
