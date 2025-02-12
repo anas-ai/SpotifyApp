@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 const AppNavigators = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={ScreenName.MUSIC_DETAILS_SCREEN}>
+      <Stack.Navigator initialRouteName={ScreenName.SIGNUP_OR_LOGIN}>
         {AuthStack.map((item, index) => (
           <Stack.Screen
             key={index}

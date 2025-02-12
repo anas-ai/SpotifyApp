@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  FlatList,
   Image,
   StyleSheet,
   TextInput,
@@ -23,8 +24,9 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const MusicDetailsScreen = ({navigation, route}) => {
-  const {songsList} = route.params || {};
+  const {selectedSong, songsList} = route.params || {};
 
+  const RestSongs = songsList.filter(item => item.id !== selectedSong.id);
   return (
     <LinearGradient
       colors={[colors.graytextColor, '#2a2a2a', '#241001', '#000000']}
@@ -101,9 +103,14 @@ const MusicDetailsScreen = ({navigation, route}) => {
         </View>
 
         {/* Artist Image */}
-        <View style={{alignItems: 'center', marginTop: scale(24)}}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: scale(24),
+          }}>
           <Image
-            source={{uri: songsList?.artwork}}
+            source={{uri: selectedSong?.artwork}}
             style={{
               width: screenWidth * 0.6,
               height: screenHeight * 0.3,
@@ -118,7 +125,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
           />
         </View>
         <ResponsiveText
-          title={songsList?.title}
+          title={selectedSong?.title}
           fontColor={colors.gray}
           fontStyle={{marginTop: scale(10), textAlign: 'center'}}
           fontSize={13}
@@ -151,42 +158,117 @@ const MusicDetailsScreen = ({navigation, route}) => {
         fontWeight="500"
         fontStyle={{marginTop: 10}}
       />
-      <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: scale(10),
+        }}>
         <View
           style={{
             flexDirection: 'row',
             gap: 1,
             alignItems: 'center',
-            marginTop: scale(8),
           }}>
           <IconPlus
             name="plus-circle"
-            size={24}
+            size={30}
             color={colors.white}
-            style={{width:scale(30)}}
+            style={{width: scale(30)}}
           />
           <IconDownload
             name="download-circle"
-            size={24}
+            size={30}
             color={colors.white}
             style={styles.IconStyle}
           />
-          <IconDotsHorizontal
-            name="dots-horizontal"
-            size={24}
-            color={colors.white}
-            style={styles.IconStyle}
+          <Image
+            source={PNG_IMG.THREE_DOTS_PNG}
+            style={{
+              height: 25,
+              width: 25,
+              tintColor: colors.white,
+              resizeMode: 'contain',
+            }}
           />
         </View>
-        <View>
-          <IconSuffle name='shuffle' size={24} color={colors.white} style={{width:scale(30)}}/>
+        <View style={{flexDirection: 'row'}}>
+          <Image
+            source={PNG_IMG.SUFFLE_PNG}
+            style={{
+              tintColor: colors.white,
+              height: 40,
+              width: 40,
+              resizeMode: 'contain',
+            }}
+          />
+
+          <View>
+            <Image
+              source={PNG_IMG.PLAY_BUTTON_PNG}
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
         </View>
       </View>
+      <View style={{marginTop: 20}} />
+      <FlatList
+        data={RestSongs}
+        keyExtractor={item => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item, index}) => (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={{
+                marginTop: index === 0 ? 0 : 10,
+              }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View>
+                  <Image
+                    source={{uri: item?.artwork}}
+                    style={{width: 70, height: 70, borderRadius: scale(5)}}
+                  />
+                </View>
+                <View>
+                  <ResponsiveText
+                    title={item?.title}
+                    fontColor={colors.white}
+                    fontSize={16}
+                    fontStyle={{marginLeft: scale(16)}}
+                  />
+                  <ResponsiveText
+                    title={item?.artist}
+                    fontColor={colors.gray}
+                    fontSize={14}
+                    fontStyle={{marginLeft: scale(16)}}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+            <View>
+              <Image
+                source={PNG_IMG.THREE_DOTS_PNG}
+                style={{height: 24, width: 24, tintColor: colors.white}}
+              />
+            </View>
+          </View>
+        )}
+      />
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  IconStyle:{width:scale(30)}
-})
+  IconStyle: {width: scale(30)},
+});
 export default MusicDetailsScreen;
