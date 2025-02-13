@@ -40,6 +40,7 @@ export const colors = {
     ButtonColor:'#3be477',
     InputBgColor:'#333331',
     AritsOrangebg:'#FF2600',
-    DarkerTone:'#1E1E1E'
+    DarkerTone:'#1E1E1E',
+    Neon_Pink:'#FF00FF'
   };
   

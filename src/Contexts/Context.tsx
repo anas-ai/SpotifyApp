@@ -8,7 +8,7 @@ const ContextProvider = ({children}: any) => {
   useEffect(() => {
     setTimeout(() => {
       setIsloading(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   
