@@ -1,4 +1,5 @@
-import {useCallback, useEffect, useState} from 'react';
+import Slider from '@react-native-community/slider';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -9,45 +10,41 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {scale} from 'react-native-size-matters';
-import TrackPlayer, {Capability} from 'react-native-track-player';
+import { scale } from 'react-native-size-matters';
+import TrackPlayer, { Capability } from 'react-native-track-player';
 import IconPlay from 'react-native-vector-icons/AntDesign';
-import {
-  default as IconDownload,
-  default as IconPlus,
-} from 'react-native-vector-icons/MaterialCommunityIcons';
+import {default as IconPlus} from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
-import {PNG_IMG} from '../../constants/ImagesName';
-import {ScreenName} from '../../constants/ScreensNames';
-import {colors} from '../../styles/color';
-import Slider from '@react-native-community/slider';
-import {Button} from 'react-native';
+import SongsPlayer from '../../components/SongsPlayerComponents/SongsPlayer';
+import { PNG_IMG } from '../../constants/ImagesName';
+import { ScreenName } from '../../constants/ScreensNames';
+import { colors } from '../../styles/color';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const MusicDetailsScreen = ({navigation, route}) => {
+const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
   const {selectedSong, songsList} = route.params || {};
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(selectedSong || songsList[0]);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
   const [showBottomPlayer, setShowBottomPlayer] = useState(null);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  
   useEffect(() => {
     setupPlayer();
   }, []);
 
   const formatTime = (time: number) => {
-    if(time <0) return "0:00";
-    const minutes = Math.floor(time /60);
+    if (time < 0) return '0:00';
+    const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10?'0':''}${seconds}`
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
-  const timeLeft = Math.max(0,duration - position);
+  const timeLeft = Math.max(0, duration - position);
 
   const fetchProgress = useCallback(async () => {
     try {
@@ -89,7 +86,6 @@ const MusicDetailsScreen = ({navigation, route}) => {
     setPlaying(false);
   };
 
-
   const setupPlayer = async () => {
     try {
       await TrackPlayer.setupPlayer();
@@ -107,9 +103,10 @@ const MusicDetailsScreen = ({navigation, route}) => {
     } catch (error) {}
   };
 
-  const RestSongs = songsList.filter(item => item.id !== selectedSong.id);
+  const RestSongs =
+    songsList?.filter(item => item?.id !== selectedSong?.id) || [];
 
-  
+ 
   return (
     <LinearGradient
       colors={[colors.graytextColor, '#2a2a2a', '#241001', '#000000']}
@@ -160,7 +157,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
             />
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.8}
             style={{
               width: scale(60),
@@ -182,7 +179,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
               fontWeight="500"
               fontSize={14}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Artist Image */}
@@ -254,8 +251,8 @@ const MusicDetailsScreen = ({navigation, route}) => {
             alignItems: 'center',
           }}>
           <IconPlus
-            name="plus-circle"
-            size={30}
+            name="pluscircleo"
+            size={scale(28)}
             color={colors.white}
             style={{width: scale(30)}}
           />
@@ -274,8 +271,6 @@ const MusicDetailsScreen = ({navigation, route}) => {
               resizeMode: 'contain',
             }}
           />
-
-          
         </View>
         <View style={{flexDirection: 'row'}}>
           {/* <TouchableOpacity >
@@ -368,7 +363,11 @@ const MusicDetailsScreen = ({navigation, route}) => {
               <View>
                 <ResponsiveText
                   title={item?.title}
-                  fontColor={currentSong?.id === item.id ?colors.ButtonColor :colors.white}
+                  fontColor={
+                    currentSong?.id === item.id
+                      ? colors.ButtonColor
+                      : colors.white
+                  }
                   fontSize={16}
                 />
                 <ResponsiveText
@@ -410,114 +409,128 @@ const MusicDetailsScreen = ({navigation, route}) => {
           </TouchableOpacity>
         )}
       />
-   {showBottomPlayer && (
-  <View
-    style={{
-      backgroundColor: 'rgba(0,0,0,0.7)',
-      width: '100%',
-      height: screenHeight * 0.10, // Increased height for better visibility
-      position: 'absolute',
-      bottom: 10,
-      alignSelf:"center",
-      paddingVertical: scale(0),
-      paddingHorizontal: scale(10),
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: scale(5),
-      justifyContent: 'space-between',
-      elevation: 5, // Shadow effect for depth
-      shadowColor: colors.primary,
-      shadowOffset: { width: 0, height: 5 },
-      shadowOpacity: 0.5,
-      shadowRadius: 5,
-    }}>
-    
-    {/* Left - Song Info */}
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: scale(15),
-      }}>
-      <Image
-        source={{ uri: currentSong?.artwork }}
-        style={{
-          height: scale(50),
-          width: scale(50),
-          borderRadius: scale(10),
-        }}
-      />
-      <View>
-        <ResponsiveText
-          title={currentSong?.title || 'Unknown Title'}
-          fontColor={colors.white}
-          fontSize={14}
-          fontWeight="bold"
-        />
-        <ResponsiveText
-          title={currentSong?.artist || 'Unknown Artist'}
-          fontColor={colors.gray}
-          fontSize={12}
-        />
-      </View>
-    </View>
 
-    {/* Right - Play/Pause Button */}
-    <TouchableOpacity
-      activeOpacity={0.7}
-      onPress={playing ? pauseSong : playSong}
-      style={{
-        backgroundColor: colors.primary,
-        borderRadius: scale(25),
-        width: scale(45),
-        height: scale(45),
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 5, // 3D Effect
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.5,
-        shadowRadius: 3,
-      }}>
-      {playing ? (
-        <Image
-          source={PNG_IMG.PAUSE_PNG}
+      {showBottomPlayer && (
+        <View
           style={{
-            height: scale(25),
-            width: scale(25),
-            tintColor: colors.white,
-          }}
-        />
-      ) : (
-        <IconPlay name="play" size={scale(25)} color={colors.white} />
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            width: '100%',
+            height: screenHeight * 0.1, // Increased height for better visibility
+            position: 'absolute',
+            bottom: 10,
+            alignSelf: 'center',
+            paddingVertical: scale(0),
+            paddingHorizontal: scale(10),
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderRadius: scale(5),
+            justifyContent: 'space-between',
+            elevation: 5, // Shadow effect for depth
+            shadowColor: colors.primary,
+            shadowOffset: {width: 0, height: 5},
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          }}>
+          {/* Left - Song Info */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setModalVisible(true)}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: scale(15),
+              }}>
+              <Image
+                source={{uri: currentSong?.artwork}}
+                style={{
+                  height: scale(50),
+                  width: scale(50),
+                  borderRadius: scale(10),
+                }}
+              />
+              <View>
+                <ResponsiveText
+                  title={currentSong?.title || 'Unknown Title'}
+                  fontColor={colors.white}
+                  fontSize={14}
+                  fontWeight="bold"
+                />
+                <ResponsiveText
+                  title={currentSong?.artist || 'Unknown Artist'}
+                  fontColor={colors.gray}
+                  fontSize={12}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Right - Play/Pause Button */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={playing ? pauseSong : playSong}
+            style={{
+              backgroundColor: colors.primary,
+              borderRadius: scale(25),
+              width: scale(45),
+              height: scale(45),
+              alignItems: 'center',
+              justifyContent: 'center',
+              elevation: 5, // 3D Effect
+              shadowColor: colors.primary,
+              shadowOffset: {width: 0, height: 3},
+              shadowOpacity: 0.5,
+              shadowRadius: 3,
+            }}>
+            {playing ? (
+              <Image
+                source={PNG_IMG.PAUSE_PNG}
+                style={{
+                  height: scale(25),
+                  width: scale(25),
+                  tintColor: colors.white,
+                }}
+              />
+            ) : (
+              <IconPlay name="play" size={scale(25)} color={colors.white} />
+            )}
+          </TouchableOpacity>
+
+          {/* 🎵 Gradient Progress Bar as Bottom Border */}
+          <Slider
+            style={{
+              position: 'absolute',
+              bottom: 0, // Stick to bottom border
+              left: 10,
+              right: 10,
+              width: '100%',
+              height: 5, // Slightly thicker for visibility
+            }}
+            minimumValue={0}
+            maximumValue={duration}
+            value={position}
+            onValueChange={setPosition} // Update UI while dragging
+            onSlidingStart={handleSlidingStart}
+            onSlidingComplete={handleSlidingComplete}
+            minimumTrackTintColor={colors.Neon_Pink} // Neon Pink
+            maximumTrackTintColor={colors.gray} // Gray
+            thumbTintColor="transparent" // Glowing Orange Thumb
+          />
+        </View>
       )}
-    </TouchableOpacity>
 
-    {/* 🎵 Gradient Progress Bar as Bottom Border */}
-    <Slider
-      style={{
-        position: "absolute",
-        bottom: 0, // Stick to bottom border
-        left: 10,
-        right: 10,
-        width: "100%",
-        height: 5, // Slightly thicker for visibility
-      }}
-      minimumValue={0}
-      maximumValue={duration}
-      value={position}
-      onValueChange={setPosition} // Update UI while dragging
-      onSlidingStart={handleSlidingStart}
-      onSlidingComplete={handleSlidingComplete}
-      minimumTrackTintColor={colors.Neon_Pink} // Neon Pink
-      maximumTrackTintColor={colors.gray} // Gray
-      thumbTintColor="transparent" // Glowing Orange Thumb
      
-    />
-  </View>
-)}
-
-
+      <SongsPlayer
+        currentSong={currentSong}
+        playing={playing}
+        onPlayPause={playing ? pauseSong : playSong}
+        position={position}
+        duration={duration}
+        onSeek={handleSlidingComplete}
+        modalVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        
+      />
     </LinearGradient>
   );
 };
