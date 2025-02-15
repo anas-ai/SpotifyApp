@@ -13,15 +13,16 @@ import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import {ScreenName} from '../../constants/ScreensNames';
 import {colors} from '../../styles/color';
 import {globalStyles} from '../../styles/globalStyles';
+import MusicListComponent from '../../components/MusicListComponet/MusicListComponent';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const HomeTab = [
-  {id: 1, TabName: 'All'},
-  {id: 2, TabName: 'Video', screenNavigation: ScreenName.HOME_SCREEN_IN_AUTH},
-  {id: 3, TabName: 'Music', screenNavigation: ScreenName.MUSIC_SCREEN},
-];
+// const HomeTab = [
+//   {id: 1, TabName: 'All'},
+//   {id: 2, TabName: 'Video', screenNavigation: ScreenName.HOME_SCREEN_IN_AUTH},
+//   {id: 3, TabName: 'Music', screenNavigation: ScreenName.MUSIC_SCREEN},
+// ];
 
 export const songsList = [
   {
@@ -72,7 +73,7 @@ const MusicScreen = ({navigation}) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   return (
     <SafeAreaView style={globalStyles.globalContainer}>
-      <View style={styles.tabContainer}>
+      {/* <View style={styles.tabContainer}>
         <View style={styles.tabItems}>
           <ResponsiveText
             title="A"
@@ -115,8 +116,8 @@ const MusicScreen = ({navigation}) => {
             </TouchableOpacity>
           ))}
         </View>
-      </View>
-      <View style={{marginTop: scale(50)}}>
+      </View> */}
+      {/* <View style={{marginTop: scale(10)}}>
         <ResponsiveText
           title="Made For Anas"
           fontColor={colors.white}
@@ -161,7 +162,9 @@ const MusicScreen = ({navigation}) => {
             )}
           />
         </View>
-      </View>
+      </View> */}
+      <MusicListComponent navigation={navigation}  title='Made For Anas' songsList={songsList} />
+
     </SafeAreaView>
   );
 };

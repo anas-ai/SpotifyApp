@@ -17,6 +17,7 @@ import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
 import VideoDetailsScreen from '../screens/VideoDetailsContainer';
 import MusicScreen from '../screens/MusicScreensContainer';
 import MusicDetailsScreen from '../screens/MusicDetailsContainer';
+import TopTabNavigator from '../Navigators/TopTabNavigator/TopTabNavigator';
 
 export const AuthStack = [
   { name: ScreenName.SIGNUP_OR_LOGIN, Component: SingUpScreen },

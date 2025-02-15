@@ -1,5 +1,5 @@
 import Slider from '@react-native-community/slider';
-import { useCallback, useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -10,16 +10,16 @@ import {
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { scale } from 'react-native-size-matters';
-import TrackPlayer, { Capability } from 'react-native-track-player';
+import {scale} from 'react-native-size-matters';
+import TrackPlayer, {Capability} from 'react-native-track-player';
 import IconPlay from 'react-native-vector-icons/AntDesign';
 import {default as IconPlus} from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import SongsPlayer from '../../components/SongsPlayerComponents/SongsPlayer';
-import { PNG_IMG } from '../../constants/ImagesName';
-import { ScreenName } from '../../constants/ScreensNames';
-import { colors } from '../../styles/color';
+import {PNG_IMG} from '../../constants/ImagesName';
+import {ScreenName} from '../../constants/ScreensNames';
+import {colors} from '../../styles/color';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -33,19 +33,62 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
   const [isSliding, setIsSliding] = useState(false);
   const [showBottomPlayer, setShowBottomPlayer] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   
+  const playNextSong = useCallback(() => {
+    setCurrentIndex(prevIndex =>
+      prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
+    );
+  }, [songsList.length]);
+
+  // Play the previous song in the list
+  const playPreviousSong = () => {
+    setCurrentIndex(prevIndex =>
+      prevIndex > 0 ? prevIndex - 1 : songsList.length - 1,
+    );
+  };
+
+  // Update the current song when index changes
+  useEffect(() => {
+    setCurrentSong(songsList[currentIndex]);
+  }, [currentIndex, songsList]);
+
+  // Initialize the player when the component mounts
   useEffect(() => {
     setupPlayer();
   }, []);
 
-  const formatTime = (time: number) => {
+  // Load and play the selected song whenever it changes
+  useEffect(() => {
+    const loadSong = async () => {
+      await TrackPlayer.reset(); // Clear the current track
+      await TrackPlayer.add({
+        id: currentSong.id,
+        url: currentSong.url, // Ensure `currentSong.url` is valid
+        title: currentSong.title,
+        artist: currentSong.artist,
+        artwork: currentSong.artwork,
+      });
+      await TrackPlayer.play(); // Start playing
+      setPlaying(true);
+    };
+
+    if (currentSong) {
+      loadSong();
+    }
+  }, [currentSong]);
+
+  // Format time (minutes:seconds)
+  const formatTime = time => {
     if (time < 0) return '0:00';
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
+
   const timeLeft = Math.max(0, duration - position);
 
+  // Fetch song progress
   const fetchProgress = useCallback(async () => {
     try {
       const {duration, position} = await TrackPlayer.getProgress();
@@ -58,34 +101,33 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
     }
   }, [isSliding]);
 
+  // Update progress every second
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    fetchProgress();
-    interval = setInterval(fetchProgress, 1000);
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  });
+    const interval = setInterval(fetchProgress, 1000);
+    return () => clearInterval(interval);
+  }, [fetchProgress]);
 
-  const handleSlidingStart = () => {
-    setIsSliding(true);
-  };
+  // Seek to a new position
+  const handleSlidingStart = () => setIsSliding(true);
 
-  const handleSlidingComplete = async (value: number) => {
-    await TrackPlayer.seekTo(value); // Seek to the selected position
+  const handleSlidingComplete = async value => {
+    await TrackPlayer.seekTo(value);
     setPosition(value);
     setIsSliding(false);
   };
 
+  // Play and pause handlers
   const playSong = async () => {
     await TrackPlayer.play();
     setPlaying(true);
   };
+
   const pauseSong = async () => {
     await TrackPlayer.pause();
     setPlaying(false);
   };
 
+  // Setup Track Player with playback capabilities
   const setupPlayer = async () => {
     try {
       await TrackPlayer.setupPlayer();
@@ -100,21 +142,19 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         compactCapabilities: [Capability.Play, Capability.Pause],
       });
       await TrackPlayer.add(songsList);
-    } catch (error) {}
+    } catch (error) {
+      console.log('Error setting up TrackPlayer:', error.message);
+    }
   };
 
+  // Exclude currently playing song from the list
   const RestSongs =
     songsList?.filter(item => item?.id !== selectedSong?.id) || [];
 
- 
   return (
     <LinearGradient
       colors={[colors.graytextColor, '#2a2a2a', '#241001', '#000000']}
-      style={{
-        flex: 1,
-        paddingVertical: scale(10),
-        paddingHorizontal: scale(14),
-      }}>
+      style={styles.LinearGradientStyle}>
       <View>
         {/* Back Button */}
         <Icon
@@ -128,20 +168,7 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         {/* Search Bar */}
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View
-            style={{
-              flex: 1,
-              backgroundColor: colors.DarkerTone,
-              height: scale(42),
-              borderRadius: scale(8),
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: scale(12),
-              shadowColor: '#000',
-              shadowOffset: {width: 0, height: 2},
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-              elevation: 5,
-            }}>
+            style={styles.searchBarStyle}>
             <Icon name="search" size={24} color={colors.white} />
             <TextInput
               placeholder="Find in playlist"
@@ -156,52 +183,14 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
               keyboardType="twitter"
             />
           </View>
-
-          {/* <TouchableOpacity
-            activeOpacity={0.8}
-            style={{
-              width: scale(60),
-              height: scale(42),
-              backgroundColor: '#1E1E1E',
-              borderRadius: scale(6),
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: scale(10),
-              shadowColor: '#000',
-              shadowOffset: {width: 0, height: 2},
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              elevation: 5,
-            }}>
-            <ResponsiveText
-              title="Sort"
-              fontColor={colors.white}
-              fontWeight="500"
-              fontSize={14}
-            />
-          </TouchableOpacity> */}
         </View>
 
         {/* Artist Image */}
         <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: scale(16),
-          }}>
+          style={styles.ArtisImageContainer}>
           <Image
             source={{uri: selectedSong?.artwork}}
-            style={{
-              width: screenWidth * 0.6,
-              height: screenHeight * 0.3,
-              borderRadius: scale(12),
-              borderWidth: 2,
-              borderColor: '#704830',
-              shadowColor: '#000',
-              shadowOffset: {width: 0, height: 3},
-              shadowOpacity: 0.3,
-              shadowRadius: 6,
-            }}
+            style={styles.ArtisImage}
           />
         </View>
         <ResponsiveText
@@ -256,12 +245,7 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
             color={colors.white}
             style={{width: scale(30)}}
           />
-          {/* <IconDownload
-            name="download-circle"
-            size={30}
-            color={colors.white}
-            style={styles.IconStyle}
-          /> */}
+
           <Image
             source={PNG_IMG.THREE_DOTS_PNG}
             style={{
@@ -519,7 +503,6 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         </View>
       )}
 
-     
       <SongsPlayer
         currentSong={currentSong}
         playing={playing}
@@ -529,7 +512,8 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         onSeek={handleSlidingComplete}
         modalVisible={modalVisible}
         onClose={() => setModalVisible(false)}
-        
+        onNext={playNextSong}
+        onPreves={playPreviousSong}
       />
     </LinearGradient>
   );
@@ -537,6 +521,42 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
 
 const styles = StyleSheet.create({
   IconStyle: {width: scale(30)},
+  LinearGradientStyle:{
+    flex: 1,
+        paddingVertical: scale(10),
+        paddingHorizontal: scale(14),
+  },
+  searchBarStyle:{
+    flex: 1,
+    backgroundColor: colors.DarkerTone,
+    height: scale(42),
+    borderRadius: scale(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: scale(12),
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  ArtisImageContainer:{
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: scale(16),
+  },
+  ArtisImage:{
+    width: screenWidth * 0.6,
+    height: screenHeight * 0.3,
+    borderRadius: scale(12),
+    borderWidth: 2,
+    borderColor: '#704830',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 3},
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
   MusicControls: {
     color: '#3ad943',
   },

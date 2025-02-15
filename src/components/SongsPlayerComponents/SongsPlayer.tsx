@@ -35,7 +35,8 @@ const SongsPlayer = ({
   onSeek,
   onClose,
   modalVisible,
- 
+  onNext,
+  onPreves
 }) => {
   const formatTime = (time: any) => {
     const minutes = Math.floor(time / 60);
@@ -152,7 +153,7 @@ const SongsPlayer = ({
             justifyContent: 'space-around',
             flexDirection: 'row',
           }}>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={onPreves} >
             <PrveIcon
               name="controller-jump-to-start"
               size={scale(60)}
@@ -174,7 +175,7 @@ const SongsPlayer = ({
               />
             )}
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onNext}>
             <NextIcon name="controller-next" size={60} color={colors.white} />
           </TouchableOpacity>
         </View>
