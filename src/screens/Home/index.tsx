@@ -94,7 +94,7 @@ export const songsList = [
 
 const HomeScreen = ({navigation}: any) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('All');
 
   return (
     <SafeAreaView style={globalStyles.globalContainer}>

@@ -1,7 +1,9 @@
 import Slider from '@react-native-community/slider';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  Animated,
   Dimensions,
+  Easing,
   FlatList,
   Image,
   StyleSheet,
@@ -20,11 +22,14 @@ import SongsPlayer from '../../components/SongsPlayerComponents/SongsPlayer';
 import {PNG_IMG} from '../../constants/ImagesName';
 import {ScreenName} from '../../constants/ScreensNames';
 import {colors} from '../../styles/color';
-
+import {Divider} from '@rneui/themed';
+import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
+import ShuffleIcon from 'react-native-vector-icons/Entypo';
+import { styles } from './StyleSheet';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
+const MusicDetailsScreen = ({navigation, route}) => {
   const {selectedSong, songsList} = route.params || {};
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(selectedSong || songsList[0]);
@@ -34,12 +39,19 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
   const [showBottomPlayer, setShowBottomPlayer] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+  const [shuffleMode, setShuffleMode] = useState(false);
+
+
   const playNextSong = useCallback(() => {
     setCurrentIndex(prevIndex =>
       prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
     );
   }, [songsList.length]);
+
+  const actionSheetRef = useRef<ActionSheetRef>(null);
+  const handleActionSheetOpen = () => {
+    actionSheetRef.current?.show();
+  };
 
   // Play the previous song in the list
   const playPreviousSong = () => {
@@ -147,9 +159,35 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
     }
   };
 
+  const shuffleSong = () => {
+    setShuffleMode(prevShuffleMode => !prevShuffleMode);
+  };
+  // const playNextSong = useCallback(() => {
+  //   if (shuffleMode) {
+  //     setCurrentIndex(prevIndex =>
+  //       prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
+  //     );
+  //   } else {
+  //     // Normal sequential playback
+  //     setCurrentIndex(prevIndex =>
+  //       prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
+  //     );
+  //   }
+  // }, [shuffleMode, songsList.length]);
+
   // Exclude currently playing song from the list
   const RestSongs =
     songsList?.filter(item => item?.id !== selectedSong?.id) || [];
+
+  const ActionSheetitems = [
+    {
+      iconsName: 'pluscircleo',
+      title: 'Add to playlist',
+      navigateToScreen: ScreenName.SELECT_PLAYLIST_SCREEN,
+    },
+    {iconsName: 'sharealt', title: 'Share'},
+    {iconsName: 'infocirlceo', title: 'About recommendations'},
+  ];
 
   return (
     <LinearGradient
@@ -167,8 +205,7 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
 
         {/* Search Bar */}
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View
-            style={styles.searchBarStyle}>
+          <View style={styles.searchBarStyle}>
             <Icon name="search" size={24} color={colors.white} />
             <TextInput
               placeholder="Find in playlist"
@@ -186,8 +223,7 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         </View>
 
         {/* Artist Image */}
-        <View
-          style={styles.ArtisImageContainer}>
+        <View style={styles.ArtisImageContainer}>
           <Image
             source={{uri: selectedSong?.artwork}}
             style={styles.ArtisImage}
@@ -203,12 +239,7 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
       </View>
 
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          marginTop: scale(5),
-        }}>
+        style={styles.SportifyIconContainer}>
         <Image
           source={PNG_IMG.SPOTIFY_ICONS_PNG}
           style={{height: scale(24), width: scale(24), resizeMode: 'contain'}}
@@ -228,48 +259,104 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
         fontStyle={{marginTop: 10}}
       />
       <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: scale(10),
-        }}>
+        style={styles.ControlsStyleContainer}>
         <View
-          style={{
-            flexDirection: 'row',
-            gap: 1,
-            alignItems: 'center',
-          }}>
-          <IconPlus
-            name="pluscircleo"
-            size={scale(28)}
-            color={colors.white}
-            style={{width: scale(30)}}
-          />
-
+          style={styles.ControlsStyle}>
           <Image
-            source={PNG_IMG.THREE_DOTS_PNG}
+            source={{uri: currentSong?.artwork}}
             style={{
-              height: scale(25),
-              width: scale(25),
-              tintColor: colors.white,
-              resizeMode: 'contain',
+              height: scale(40),
+              width: scale(40),
+              borderRadius: scale(20),
             }}
           />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          {/* <TouchableOpacity >
+          <IconPlus
+            name="pluscircleo"
+            size={scale(22)}
+            color={colors.gray}
+            style={{width: scale(30)}}
+          />
+          <TouchableOpacity onPress={handleActionSheetOpen}>
             <Image
-              source={PNG_IMG.SUFFLE_PNG}
+              source={PNG_IMG.THREE_DOTS_PNG}
               style={{
-                tintColor: colors.white,
-                height: scale(35),
-                width: scale(35),
+                height: scale(22),
+                width: scale(22),
+                tintColor: colors.gray,
                 resizeMode: 'contain',
               }}
             />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <ActionSheet
+            containerStyle={styles.ActionSheetContianer}
+            ref={actionSheetRef}
+            gestureEnabled>
+            <View style={styles.artistsCurrentStyle}>
+              <Image
+                source={{uri: currentSong?.artwork}}
+                style={styles.ActionSheetImgStyle}
+              />
+              <View>
+                <ResponsiveText
+                  title={currentSong?.title}
+                  fontColor={colors.white}
+                />
+                <ResponsiveText
+                  title="by Spotify"
+                  fontColor={colors.gray}
+                  fontSize={14}
+                />
+              </View>
+            </View>
+            <Divider style={{marginTop: scale(16)}} color={colors.gray} />
+            {ActionSheetitems.map((item, index) => (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  if (item?.navigateToScreen) {
+                    navigation.navigate(item.navigateToScreen);
+                  } else {
+                    console.log(`${item.title} clicked`);
+                  }
+                }}
+                key={index}
+                style={{
+                  flexDirection: 'row',
+                  gap: 20,
+                  marginTop: scale(20),
+                  paddingHorizontal: scale(16),
+                  alignItems: 'center',
+                }}>
+                <IconPlus
+                  name={item?.iconsName}
+                  size={scale(24)}
+                  color={colors.gray}
+                  style={{width: scale(30)}}
+                />
+                <ResponsiveText
+                  title={item?.title}
+                  fontWeight="400"
+                  fontColor={colors.white}
+                />
+              </TouchableOpacity>
+            ))}
+          </ActionSheet>
+        </View>
+
+        <View style={styles.shuffleContainer}>
+          <TouchableOpacity
+            style={{marginRight: 10}}
+            activeOpacity={0.8}
+            onPress={playNextSong}>
+            <ShuffleIcon
+              name="shuffle"
+              size={30}
+              style={{color: colors.white}}
+            />
+          </TouchableOpacity>
+
+          <View style={styles.PlayPauseContainer}>
             {playing ? (
               <TouchableOpacity activeOpacity={0.8} onPress={pauseSong}>
                 <Image
@@ -383,9 +470,9 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
                 <Image
                   source={PNG_IMG.THREE_DOTS_PNG}
                   style={{
-                    height: scale(24),
-                    width: scale(24),
-                    tintColor: colors.white,
+                    height: scale(22),
+                    width: scale(22),
+                    tintColor: colors.gray,
                   }}
                 />
               </TouchableOpacity>
@@ -519,46 +606,5 @@ const MusicDetailsScreen = ({navigation, route, currentSongs}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  IconStyle: {width: scale(30)},
-  LinearGradientStyle:{
-    flex: 1,
-        paddingVertical: scale(10),
-        paddingHorizontal: scale(14),
-  },
-  searchBarStyle:{
-    flex: 1,
-    backgroundColor: colors.DarkerTone,
-    height: scale(42),
-    borderRadius: scale(8),
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: scale(12),
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
 
-  ArtisImageContainer:{
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: scale(16),
-  },
-  ArtisImage:{
-    width: screenWidth * 0.6,
-    height: screenHeight * 0.3,
-    borderRadius: scale(12),
-    borderWidth: 2,
-    borderColor: '#704830',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 3},
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  MusicControls: {
-    color: '#3ad943',
-  },
-});
 export default MusicDetailsScreen;

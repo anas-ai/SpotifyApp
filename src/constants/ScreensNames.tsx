@@ -19,7 +19,8 @@ export const ScreenName = {
     HOME_SCREEN_IN_AUTH:'HomeScreenInAuth',
     MUSIC_SCREEN:'MusicSreen',
     MUSIC_DETAILS_SCREEN:'Musicdetailsscreen',
-    TOP_TAB_SCREEN:'toptabscreen'
+    TOP_TAB_SCREEN:'toptabscreen',
+    SELECT_PLAYLIST_SCREEN:'select_playlist_screen'
 }
 
 

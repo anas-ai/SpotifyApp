@@ -17,7 +17,7 @@ import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
 import VideoDetailsScreen from '../screens/VideoDetailsContainer';
 import MusicScreen from '../screens/MusicScreensContainer';
 import MusicDetailsScreen from '../screens/MusicDetailsContainer';
-import TopTabNavigator from '../Navigators/TopTabNavigator/TopTabNavigator';
+import SelectPlaylist from '../screens/SelectAplaylistContainer';
 
 export const AuthStack = [
   { name: ScreenName.SIGNUP_OR_LOGIN, Component: SingUpScreen },
@@ -38,7 +38,7 @@ export const AuthStack = [
   { name: ScreenName.HOME_SCREEN_IN_AUTH, Component: TabNavigator },
   { name: ScreenName.MUSIC_SCREEN, Component: MusicScreen },
   { name: ScreenName.MUSIC_DETAILS_SCREEN, Component: MusicDetailsScreen },
-  
+  { name: ScreenName.SELECT_PLAYLIST_SCREEN, Component:SelectPlaylist },
 ];
 
 
