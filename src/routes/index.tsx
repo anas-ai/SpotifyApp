@@ -1,6 +1,10 @@
 import { ScreenName } from '../constants/ScreensNames';
 import TabNavigator from '../Navigators/TabNavigator/TabNavigator';
 import AuthScreen from '../screens/AuthContainer';
+import PostScreen from '../screens/BottomTapsContainers/PostContainer';
+import SearchScreenTab from '../screens/BottomTapsContainers/SearchContainer';
+import SearchScreenMain from '../screens/BottomTapsContainers/SearchContainer/SearchSreen';
+import ShortsVideoScreen from '../screens/BottomTapsContainers/ShortsContainers';
 import CheckYourEmailScreen from '../screens/CheckYourEmailContainer';
 import ChooseArtistScreen from '../screens/ChooseArtistContainer';
 import LoginWithNumber from '../screens/ContinueWithNumberContainer';
@@ -9,15 +13,17 @@ import CreateAccount from '../screens/CreateAccountContaienr';
 import CreatePassword from '../screens/CreatePasswordContainer';
 import DateOfBirthScreen from '../screens/DateOfBirthContainer';
 import GenderScreen from '../screens/GenderContaienr';
+import LiveScreen from '../screens/LiveScreenContainer';
 import LoginScreen from '../screens/LoginConainer';
 import LogWithoutPassword from '../screens/LoginWithoutPasswordContainer';
-import MusicCetegoryScreen from '../screens/VideoCetegoryContainer';
+import MusicDetailsScreen from '../screens/MusicDetailsContainer';
+import MusicScreen from '../screens/MusicScreensContainer';
+import PodcastScreen from '../screens/PodcastContainer';
+import SelectPlaylist from '../screens/SelectAplaylistContainer';
 import SingUpScreen from '../screens/SingUPorLoginContainer';
 import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
+import MusicCetegoryScreen from '../screens/VideoCetegoryContainer';
 import VideoDetailsScreen from '../screens/VideoDetailsContainer';
-import MusicScreen from '../screens/MusicScreensContainer';
-import MusicDetailsScreen from '../screens/MusicDetailsContainer';
-import SelectPlaylist from '../screens/SelectAplaylistContainer';
 
 export const AuthStack = [
   { name: ScreenName.SIGNUP_OR_LOGIN, Component: SingUpScreen },
@@ -39,6 +45,12 @@ export const AuthStack = [
   { name: ScreenName.MUSIC_SCREEN, Component: MusicScreen },
   { name: ScreenName.MUSIC_DETAILS_SCREEN, Component: MusicDetailsScreen },
   { name: ScreenName.SELECT_PLAYLIST_SCREEN, Component:SelectPlaylist },
+  { name: ScreenName.SEARCH_SCREEN, Component:SearchScreenTab },
+  { name: ScreenName.POST_SCREEN, Component:PostScreen },
+  { name: ScreenName.SHORTS_VIDEO_SCREEN, Component: ShortsVideoScreen},
+  { name: ScreenName.PODCAST_SCREEN, Component: PodcastScreen},
+  { name: ScreenName.LIVE_SCREEN, Component: LiveScreen},
+  { name: ScreenName.SEARCH_SCRREN_MAIN, Component:SearchScreenMain },
 ];
 
 

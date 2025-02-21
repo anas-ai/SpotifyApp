@@ -14,7 +14,7 @@ import {colors} from '../../styles/color';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const SongCard = ({song, onPress}) => (
+const SongCard = ({song, onPress}:any) => (
   <TouchableOpacity onPress={onPress} style={{marginRight: 15}}>
     <Image
       source={{uri: song?.artwork}}
@@ -36,7 +36,7 @@ const SongCard = ({song, onPress}) => (
 const MusicListComponent = ({navigation, title = '', songsList}:any) => {
   return (
     <SafeAreaView>
-      <View style={{marginTop: scale(10)}}>
+      <View style={{marginTop: scale(25)}}>
         <ResponsiveText
           title={title}
           fontColor={colors.white}

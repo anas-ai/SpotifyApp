@@ -69,117 +69,17 @@ export const songsList = [
   },
 ];
 
-const MusicScreen = ({navigation}) => {
+const MusicScreen = ({navigation}:any) => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   return (
-    <SafeAreaView style={globalStyles.globalContainer}>
-      {/* <View style={styles.tabContainer}>
-        <View style={styles.tabItems}>
-          <ResponsiveText
-            title="A"
-            fontColor={colors.bgBlack}
-            fontWeight="bold"
-            fontSize={18}
-          />
-        </View>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          {HomeTab.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                setSelectedTab(item.TabName);
-                if (item?.screenNavigation) {
-                  navigation.navigate(item?.screenNavigation);
-                }
-              }}>
-              <ResponsiveText
-                title={item.TabName}
-                fontColor={
-                  selectedTab === item.TabName ? colors.black : colors.white
-                }
-                fontStyle={{
-                  backgroundColor:
-                    selectedTab === item.TabName
-                      ? colors.ButtonColor
-                      : 'transparent',
-                  paddingVertical: scale(8),
-                  paddingHorizontal: scale(20),
-                  borderRadius: scale(20),
-                  textAlign: 'center',
-                  borderColor:
-                    selectedTab === item.TabName ? colors.white : colors.white,
-                  borderWidth: selectedTab === item.TabName ? 0.5 : 1,
-                }}
-                fontSize={13}
-                fontWeight="700"
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View> */}
-      {/* <View style={{marginTop: scale(10)}}>
-        <ResponsiveText
-          title="Made For Anas"
-          fontColor={colors.white}
-          fontSize={24}
-          fontWeight="700"
-        />
-        <View style={{marginTop: 20}}>
-          <FlatList
-            data={songsList}
-            horizontal
-            keyExtractor={item => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({item, index}) => (
-              <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(ScreenName.MUSIC_DETAILS_SCREEN, {
-                  selectedSong: item,
-                  songsList: songsList,
-                })
-              }
-              
-                style={{marginRight: 15}}
-                key={item.id}>
-                <Image
-                  source={{uri: item?.artwork}}
-                  style={{
-                    width: screenWidth * 0.6,
-                    height: screenHeight * 0.25,
-                    borderRadius: 10,
-                  }}
-                />
-                <ResponsiveText
-                  title={item?.title}
-                  fontColor={colors.gray}
-                  fontSize={14}
-                  fontStyle={{
-                    marginVertical: verticalScale(6),
-                    textAlign: 'center',
-                  }}
-                />
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </View> */}
-      <MusicListComponent navigation={navigation}  title='Made For Anas' songsList={songsList} />
-
+    <SafeAreaView>
+      <MusicListComponent
+        navigation={navigation}
+        title="Made For Anas"
+        songsList={songsList}
+      />
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  tabContainer: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  tabItems: {
-    backgroundColor: colors.bgPink,
-    borderRadius: 30,
-    width: 38,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 38,
-  },
-});
+
 export default MusicScreen;

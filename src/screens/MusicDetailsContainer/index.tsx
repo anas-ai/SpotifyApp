@@ -1,30 +1,27 @@
 import Slider from '@react-native-community/slider';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import { Divider } from '@rneui/themed';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Animated,
   Dimensions,
-  Easing,
   FlatList,
   Image,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
 import LinearGradient from 'react-native-linear-gradient';
-import {scale} from 'react-native-size-matters';
-import TrackPlayer, {Capability} from 'react-native-track-player';
-import IconPlay from 'react-native-vector-icons/AntDesign';
-import {default as IconPlus} from 'react-native-vector-icons/AntDesign';
+import { scale } from 'react-native-size-matters';
+import TrackPlayer, { Capability } from 'react-native-track-player';
+import IconPlay, { default as IconPlus } from 'react-native-vector-icons/AntDesign';
+import ShuffleIcon from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import RecommenDationsModel from '../../components/RecommenDationsModel/RecommenDationsModel';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import SongsPlayer from '../../components/SongsPlayerComponents/SongsPlayer';
-import {PNG_IMG} from '../../constants/ImagesName';
-import {ScreenName} from '../../constants/ScreensNames';
-import {colors} from '../../styles/color';
-import {Divider} from '@rneui/themed';
-import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
-import ShuffleIcon from 'react-native-vector-icons/Entypo';
+import { PNG_IMG } from '../../constants/ImagesName';
+import { ScreenName } from '../../constants/ScreensNames';
+import { colors } from '../../styles/color';
 import { styles } from './StyleSheet';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -39,8 +36,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
   const [showBottomPlayer, setShowBottomPlayer] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [shuffleMode, setShuffleMode] = useState(false);
-
+  const [recommenDationsModelVisibal,setRecommenDationsModelVisibal] = useState<boolean>(false)
 
   const playNextSong = useCallback(() => {
     setCurrentIndex(prevIndex =>
@@ -159,23 +155,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
     }
   };
 
-  const shuffleSong = () => {
-    setShuffleMode(prevShuffleMode => !prevShuffleMode);
-  };
-  // const playNextSong = useCallback(() => {
-  //   if (shuffleMode) {
-  //     setCurrentIndex(prevIndex =>
-  //       prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
-  //     );
-  //   } else {
-  //     // Normal sequential playback
-  //     setCurrentIndex(prevIndex =>
-  //       prevIndex < songsList.length - 1 ? prevIndex + 1 : 0,
-  //     );
-  //   }
-  // }, [shuffleMode, songsList.length]);
-
-  // Exclude currently playing song from the list
+ 
   const RestSongs =
     songsList?.filter(item => item?.id !== selectedSong?.id) || [];
 
@@ -238,8 +218,7 @@ const MusicDetailsScreen = ({navigation, route}) => {
         />
       </View>
 
-      <View
-        style={styles.SportifyIconContainer}>
+      <View style={styles.SportifyIconContainer}>
         <Image
           source={PNG_IMG.SPOTIFY_ICONS_PNG}
           style={{height: scale(24), width: scale(24), resizeMode: 'contain'}}
@@ -258,10 +237,8 @@ const MusicDetailsScreen = ({navigation, route}) => {
         fontWeight="500"
         fontStyle={{marginTop: 10}}
       />
-      <View
-        style={styles.ControlsStyleContainer}>
-        <View
-          style={styles.ControlsStyle}>
+      <View style={styles.ControlsStyleContainer}>
+        <View style={styles.ControlsStyle}>
           <Image
             source={{uri: currentSong?.artwork}}
             style={{
@@ -316,6 +293,8 @@ const MusicDetailsScreen = ({navigation, route}) => {
                 onPress={() => {
                   if (item?.navigateToScreen) {
                     navigation.navigate(item.navigateToScreen);
+                  } else if (item.title === 'About recommendations') {
+                    setRecommenDationsModelVisibal(true);
                   } else {
                     console.log(`${item.title} clicked`);
                   }
@@ -602,9 +581,9 @@ const MusicDetailsScreen = ({navigation, route}) => {
         onNext={playNextSong}
         onPreves={playPreviousSong}
       />
+      <RecommenDationsModel isVisible = {recommenDationsModelVisibal} setIsVisible={setRecommenDationsModelVisibal}/>
     </LinearGradient>
   );
 };
-
 
 export default MusicDetailsScreen;

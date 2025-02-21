@@ -50,7 +50,7 @@ const VideoListComponent = ({
   videoUrls: any;
 }) => {
   return (
-    <View style={{marginTop: scale(35)}}>
+    <View style={{marginTop: scale(10)}}>
       <ResponsiveText
         title={title}
         fontColor={colors.white}

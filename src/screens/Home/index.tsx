@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import {
+  Dimensions,
+  FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -13,12 +15,20 @@ import VideoListComponent from '../../components/VideoLlistComponents/VideoListC
 import {ScreenName} from '../../constants/ScreensNames';
 import {colors} from '../../styles/color';
 import {globalStyles} from '../../styles/globalStyles';
+import PostScreen from '../BottomTapsContainers/PostContainer';
+import LiveScreen from '../LiveScreenContainer';
+import MusicScreen from '../MusicScreensContainer';
 
 const HomeTab = [
-  {id: 1, TabName: 'All'},
+  {id: 1, TabName: 'Home'},
   {id: 2, TabName: 'Video'},
   {id: 3, TabName: 'Music', screenNavigation: ScreenName.MUSIC_SCREEN},
+  {id: 4, TabName: 'Podcast', screenNavigation: ScreenName.PODCAST_SCREEN},
+  {id: 5, TabName: 'Live'},
 ];
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 export const videoUrls: any = [
   {
@@ -47,7 +57,7 @@ export const videoUrls: any = [
   },
 ];
 
-export const songsList = [
+export const songsList: any = [
   {
     title: 'Death Bed',
     artist: 'Powfu',
@@ -93,25 +103,18 @@ export const songsList = [
 ];
 
 const HomeScreen = ({navigation}: any) => {
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('All');
+  const [activeTab, setActiveTab] = useState('Home');
 
   return (
     <SafeAreaView style={globalStyles.globalContainer}>
-      <ScrollView>
-        <View style={styles.tabContainer}>
-          <View style={styles.tabItems}>
-            <ResponsiveText
-              title="A"
-              fontColor={colors.bgBlack}
-              fontWeight="bold"
-              fontSize={18}
-            />
-          </View>
-          <View style={{flexDirection: 'row', gap: 10}}>
-            {HomeTab.map((item, index) => (
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <FlatList
+            data={HomeTab}
+            horizontal
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item, index}) => (
               <TouchableOpacity
-                key={index}
+                activeOpacity={0.8}
                 onPress={() => setActiveTab(item?.TabName)}>
                 <ResponsiveText
                   title={item.TabName}
@@ -123,10 +126,13 @@ const HomeScreen = ({navigation}: any) => {
                       activeTab === item.TabName
                         ? colors.ButtonColor
                         : 'transparent',
-                    paddingVertical: scale(8),
-                    paddingHorizontal: scale(20),
-                    borderRadius: scale(20),
+                    height: screenHeight * 0.04,
+                    width: screenWidth * 0.2,
                     textAlign: 'center',
+                    padding: scale(2),
+                    borderRadius: scale(10),
+                    paddingTop: scale(5),
+                    marginLeft: index === 0 ? 0 : 10,
                     borderColor:
                       activeTab === item.TabName ? colors.white : colors.white,
                     borderWidth: activeTab === item.TabName ? 0.5 : 1,
@@ -135,59 +141,49 @@ const HomeScreen = ({navigation}: any) => {
                   fontWeight="700"
                 />
               </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+            )}
+          />
+      </View>
 
+      {/* Scrollable Content */}
+      {activeTab === 'Home' && (
         <View>
-          {activeTab === 'All' && (
-            <View>
-              <VideoListComponent
-                navigation={navigation}
-                title="All Videos"
-                videoUrls={videoUrls}
-              />
-              <MusicListComponent
-                navigation={navigation}
-                title="Made For Anas"
-                songsList={songsList}
-              />
-            </View>
-          )}
-
-          {activeTab === 'Video' && (
-            <VideoListComponent
-              navigation={navigation}
-              title="All Videos"
-              videoUrls={videoUrls}
-            />
-          )}
-
-          {activeTab === 'Music' && (
-            <MusicListComponent
-              navigation={navigation}
-              title="Made For Anas"
-              songsList={songsList}
-            />
-          )}
+          <VideoListComponent
+            navigation={navigation}
+            title="All Videos"
+            videoUrls={videoUrls}
+          />
+          <MusicScreen navigation={navigation} />
         </View>
-      </ScrollView>
+      )}
+      {activeTab === 'Video' && (
+        <VideoListComponent
+          navigation={navigation}
+          title="All Videos"
+          videoUrls={videoUrls}
+        />
+      )}
+      {activeTab === 'Music' && (
+        <MusicListComponent
+          navigation={navigation}
+          title="Made For Anas"
+          songsList={songsList}
+        />
+      )}
+      {activeTab === 'Podcast' && <PostScreen />}
+      {activeTab === 'Live' && <LiveScreen />}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  tabContainer: {
-    flexDirection: 'row',
-    gap: 20,
-  },
   tabItems: {
     backgroundColor: colors.bgPink,
     borderRadius: 30,
-    width: 38,
+    width: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 38,
+    height: 30,
   },
 });
 

@@ -12,15 +12,25 @@ export const ScreenName = {
     CREATE_ACCOUNT_SCREEN:'createaccount',
     MUSIC_CATEGORY_SCREEN:'musiccategoryscreen',
     HOME_SCREEN:'Home',
-    PROFILE_SCREEN:'Profile',
     CHOOSE_ARTISTS_SCREEN:'Choose',
     LOG_WITH_NUMBER:'WithNumber',
     VIDEO_DETAILS_SCREEN:'MusicDetailsScreens',
-    HOME_SCREEN_IN_AUTH:'HomeScreenInAuth',
     MUSIC_SCREEN:'MusicSreen',
     MUSIC_DETAILS_SCREEN:'Musicdetailsscreen',
     TOP_TAB_SCREEN:'toptabscreen',
-    SELECT_PLAYLIST_SCREEN:'select_playlist_screen'
+    SELECT_PLAYLIST_SCREEN:'select_playlist_screen',
+    PODCAST_SCREEN:'podcast',
+    LIVE_SCREEN:'live',
+    SEARCH_SCRREN_MAIN:'search_main',
+    //bottom-tabs
+    HOME_SCREEN_IN_AUTH:'HomeScreenInAuth',
+    SEARCH_SCREEN:'Search',
+    POST_SCREEN:'Post',
+    SHORTS_VIDEO_SCREEN:'short',
+    PROFILE_SCREEN:'Profile',
+
+
+
 }
 
 
