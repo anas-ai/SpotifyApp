@@ -236,14 +236,14 @@ const VideoDetailsScreen = ({navigation}: any) => {
       <View
         style={[
           styles.YouTubeIframeStyleContainer,
-          isFullscreen && styles.fullscreenContainer,
         ]}>
         <View
-          style={[styles.videoWrapper, isFullscreen && styles.fullscreenVideo]}>
+          style={[styles.videoWrapper,]}>
           <YouTubeIframe
             ref={youtubePlayerRef}
             videoId={videoId}
-            height={'100%'}
+            height={isFullscreen?Dimensions.get('window').height * 1:'100%'}
+            width={isFullscreen?Dimensions.get('window').width * 1.08:'100%'}
             play={playing}
             onReady={() => console.log('Video is ready')}
             onProgress={({currentTime}) => setCurrentTime(currentTime)}
@@ -328,13 +328,7 @@ const VideoDetailsScreen = ({navigation}: any) => {
       </View>
 
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingHorizontal: scale(10),
-          paddingTop: scale(10),
-        }}>
+        style={styles.formatTime}>
         <Text style={{color: colors.white, fontSize: scale(10)}}>
           {formatTime(currentTime)} / {formatTime(totalDuration - currentTime)}
         </Text>
@@ -470,6 +464,14 @@ const VideoDetailsScreen = ({navigation}: any) => {
 };
 
 export const styles = StyleSheet.create({
+  formatTime:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(10),
+    paddingTop: scale(10),
+    marginTop:scale(32)
+  },
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -489,11 +491,10 @@ export const styles = StyleSheet.create({
   },
   YouTubeIframeStyleContainer: {
     backgroundColor: 'black',
-    width:'100%',
-    height:SCREEN_HEIGHT * 0.25
+    height:SCREEN_HEIGHT * 0.26,
+
   },
   fullscreenContainer: {
-    position: 'absolute',
     top: 0,
     left: 0,
     width: SCREEN_HEIGHT,  // Swap width & height for landscape
@@ -506,11 +507,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  fullscreenVideo: {
-    position: 'absolute',
-    width: SCREEN_HEIGHT,
-    height: SCREEN_WIDTH,
-  },
+  
   overlay: {
     position: 'absolute',
     width: '100%',
