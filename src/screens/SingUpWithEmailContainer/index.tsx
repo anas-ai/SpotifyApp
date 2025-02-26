@@ -51,11 +51,11 @@ const SingUpEmailScreen = ({navigation}: any) => {
           name="email"
           rules={{
             required: 'email',
-            // pattern: {
-            //   value:
-            //     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]$/,
-            //   message: 'Enter valid email',
-            // },
+            pattern: {
+              value:
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: 'Enter valid email',
+            },
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <TextInput

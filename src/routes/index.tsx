@@ -23,6 +23,7 @@ import SelectPlaylist from '../screens/SelectAplaylistContainer';
 import SingUpScreen from '../screens/SingUPorLoginContainer';
 import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
 import MusicCetegoryScreen from '../screens/VideoCetegoryContainer';
+import VIDEO_SCREEN from '../screens/VideoContainer';
 import VideoDetailsScreen from '../screens/VideoDetailsContainer';
 
 export const AuthStack = [
@@ -51,6 +52,7 @@ export const AuthStack = [
   { name: ScreenName.PODCAST_SCREEN, Component: PodcastScreen},
   { name: ScreenName.LIVE_SCREEN, Component: LiveScreen},
   { name: ScreenName.SEARCH_SCRREN_MAIN, Component:SearchScreenMain },
+  { name: ScreenName.VIDEO_SCREEN, Component:VIDEO_SCREEN },
 ];
 
 

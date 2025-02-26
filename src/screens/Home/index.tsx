@@ -30,6 +30,7 @@ const HomeTab = [
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
+
 export const videoUrls: any = [
   {
     id: 1,
@@ -57,7 +58,15 @@ export const videoUrls: any = [
   },
 ];
 
-export const songsList: any = [
+export interface song {
+  id:string,
+  title:string,
+  artist:string,
+  artwork:string,
+  url:string
+}
+
+export const songsList: song[] = [
   {
     title: 'Death Bed',
     artist: 'Powfu',
@@ -111,6 +120,7 @@ const HomeScreen = ({navigation}: any) => {
           <FlatList
             data={HomeTab}
             horizontal
+            showsHorizontalScrollIndicator={false}
             keyExtractor={item => item.id.toString()}
             renderItem={({item, index}) => (
               <TouchableOpacity
@@ -145,7 +155,6 @@ const HomeScreen = ({navigation}: any) => {
           />
       </View>
 
-      {/* Scrollable Content */}
       {activeTab === 'Home' && (
         <View>
           <VideoListComponent

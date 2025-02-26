@@ -35,7 +35,7 @@ const SongCard = ({song, onPress}:any) => (
 
 const MusicListComponent = ({navigation, title = '', songsList}:any) => {
   return (
-    <SafeAreaView>
+    <View>
       <View style={{marginTop: scale(25)}}>
         <ResponsiveText
           title={title}
@@ -63,7 +63,7 @@ const MusicListComponent = ({navigation, title = '', songsList}:any) => {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

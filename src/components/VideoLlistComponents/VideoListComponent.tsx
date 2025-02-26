@@ -13,32 +13,6 @@ import {ScreenName} from '../../constants/ScreensNames';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-// export const videoUrls: any = [
-//     {
-//       id: 1,
-//       link: 'https://www.youtube.com/embed/25VRdPO8xJ0',
-//     },
-//     {
-//       id: 2,
-//       link: 'https://www.youtube.com/embed/WQdqgrWvy6g',
-//     },
-//     {
-//       id: 3,
-//       link: 'https://www.youtube.com/embed/4kGVdHt0U5o',
-//     },
-//     {
-//       id: 5,
-//       link: 'https://www.youtube.com/embed/NXM37eeDF74',
-//     },
-//     {
-//       id: 6,
-//       link: 'https://www.youtube.com/embed/A_1V9AColh4',
-//     },
-//     {
-//       id: 7,
-//       link: 'https://www.youtube.com/embed/V258-P0Zhs8',
-//     },
-//   ];
 
 const VideoListComponent = ({
   navigation,

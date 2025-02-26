@@ -1,55 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
-import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
-import {PNG_IMG} from '../../constants/ImagesName';
-import {colors} from '../../styles/color';
-import {globalStyles} from '../../styles/globalStyles';
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { PNG_IMG } from '../../constants/ImagesName';
+import { colors } from '../../styles/color';
+import { globalStyles } from '../../styles/globalStyles';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import PhoneIcon from '../../assets/svgs/Phone.Icon';
 import GoogleSvg from '../../assets/svgs/GoogleSvg';
 import FaceBookSvg from '../../assets/svgs/FaceBookSvg';
-import {ScreenName} from '../../constants/ScreensNames';
+import { ScreenName } from '../../constants/ScreensNames';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import CustomBackButton from '../../components/BackButtonComponents/CustomBackButton';
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen = ({ navigation }: any) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSocialLogin = (screenNavigation: string | undefined) => {
+    if (!screenNavigation) return; // Prevent navigation errors
+  
+    if (screenNavigation === ScreenName.HOME_SCREEN_IN_AUTH || ScreenName.LOG_WITH_NUMBER) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        navigation.navigate(screenNavigation);
+      }, 2000);
+    } else {
+      navigation.navigate(screenNavigation);
+    }
+  };
+  
+
   const Social_Logins = [
     {
-      Icon: (
-        <PhoneIcon width={scale(30)} height={scale(30)} fill={colors.white} />
-      ),
+      Icon: <PhoneIcon width={scale(30)} height={scale(30)} fill={colors.white} />,
       LoginTitle: 'Continue with phone number',
       screenNavigation: ScreenName.LOG_WITH_NUMBER,
     },
     {
       Icon: <GoogleSvg width={scale(30)} height={scale(30)} />,
       LoginTitle: 'Continue with Google ',
+      screenNavigation: ScreenName.HOME_SCREEN_IN_AUTH, // Ensure this is defined
     },
     {
       Icon: <FaceBookSvg width={scale(30)} height={scale(30)} />,
       LoginTitle: 'Continue with Facebook ',
+      screenNavigation: undefined, // No navigation for now
     },
   ];
-
-  const handleLoginEmail = () => {
-    navigation.navigate(ScreenName.CONTINUE_WITH_EMAIL_LOGIN);
-  };
-  const handleSignUp = () => {
-    navigation.navigate(ScreenName.AUTH_SCREEN);
-  };
 
   return (
     <SafeAreaView style={[globalStyles.globalContainer]}>
       <CustomBackButton navigation={navigation} />
 
       <View style={styles.container}>
-        <View style={{alignItems: 'center', marginBottom: scale(40)}}>
+        <View style={{ alignItems: 'center', marginBottom: scale(40) }}>
           <View style={styles.iconContainer}>
             <Image source={PNG_IMG.SPOTIFY_ICON} style={styles.img} />
           </View>
@@ -65,20 +76,22 @@ const LoginScreen = ({navigation}: any) => {
 
         <View style={styles.buttonStyleContainer}>
           <CustomButton
-            onPress={handleLoginEmail}
+            onPress={() => navigation.navigate(ScreenName.CONTINUE_WITH_EMAIL_LOGIN)}
             title="Continue with email"
             titleStyle={styles.buttonTitleStyle}
             buttonStyle={styles.buttonStyle}
             disabled={false}
             loading={false}
           />
-          <View style={{marginTop: verticalScale(10)}}>
+          <View style={{ marginTop: verticalScale(10) }}>
             {Social_Logins.map((item, index) => (
               <TouchableOpacity
-                onPress={() => navigation.navigate(item?.screenNavigation)}
+                onPress={() => handleSocialLogin(item?.screenNavigation)}
                 activeOpacity={0.8}
                 key={index}
-                style={styles.socialButton}>
+                style={styles.socialButton}
+                disabled={loading}
+              >
                 <View style={styles.socialButtonContent}>
                   {item.Icon}
                   <ResponsiveText
@@ -91,18 +104,8 @@ const LoginScreen = ({navigation}: any) => {
               </TouchableOpacity>
             ))}
           </View>
+          {loading && <ActivityIndicator size="large" color={colors.ButtonColor} style={{ marginTop: 20 }} />}
         </View>
-
-        <TouchableOpacity
-          style={{marginTop: scale(20)}}
-          activeOpacity={0.8}
-          onPress={handleSignUp}>
-          <ResponsiveText
-            title="Sign up"
-            fontColor={colors.white}
-            fontWeight="600"
-          />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

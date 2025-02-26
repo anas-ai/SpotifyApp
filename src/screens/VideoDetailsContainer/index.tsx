@@ -1,25 +1,39 @@
 import Slider from '@react-native-community/slider';
-import { useRoute } from '@react-navigation/native';
-import { useCallback, useRef, useState } from 'react';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
   FlatList,
   Image,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
-import { default as Stepbackward, default as StepForward } from 'react-native-vector-icons/AntDesign';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import {
+  default as Stepbackward,
+  default as StepForward,
+} from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import YouTubeIframe, { YoutubeIframeRef } from 'react-native-youtube-iframe';
+import YouTubeIframe, {YoutubeIframeRef} from 'react-native-youtube-iframe';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
-import { ScreenName } from '../../constants/ScreensNames';
-import { colors } from '../../styles/color';
-import { globalStyles } from '../../styles/globalStyles';
-import { videoUrls } from '../Home';
+import {ScreenName} from '../../constants/ScreensNames';
+import {colors} from '../../styles/color';
+import {globalStyles} from '../../styles/globalStyles';
+import {videoUrls} from '../Home';
+import Orientation from 'react-native-orientation-locker';
+import FullScreen from 'react-native-vector-icons/MaterialCommunityIcons';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+
+const SCREEN_HEIGHT = Dimensions.get('screen').height;
+const SCREEN_WIDTH = Dimensions.get('screen').width;
+
+// Determine if the device is in landscape mode
+const isLandscape = SCREEN_WIDTH > SCREEN_HEIGHT;
 
 const VideoDetailsScreen = ({navigation}: any) => {
   const route = useRoute();
@@ -27,6 +41,79 @@ const VideoDetailsScreen = ({navigation}: any) => {
   const [playing, setPlaying] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgrees] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [isfullScreen, setIsfullScreen] = useState(false);
+
+  useFocusEffect(useCallback(()=>{
+    return ()=>{
+      Orientation.lockToPortrait()
+      StatusBar.setHidden(false)
+    }
+  },[]))
+
+  useEffect(() => {
+    if (isFullscreen) {
+      Orientation.lockToLandscape();
+      StatusBar.setHidden(true);
+      SystemNavigationBar.stickyImmersive();
+    } else {
+      Orientation.lockToPortrait();
+      StatusBar.setHidden(false);
+      // SystemNavigationBar.leanBack();
+    }
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    let timer;
+    if (showControls) {
+      timer = setTimeout(() => {
+        setShowControls(false);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [showControls]);
+
+  useEffect(() => {
+    if (youtubePlayerRef.current) {
+      youtubePlayerRef.current.getDuration().then(duration => {
+        setTotalDuration(duration);
+      });
+    }
+  }, []);
+
+  const handleScreenTap = () => {
+    if (isFullscreen) {
+      setShowControls(true);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      Orientation.lockToPortrait();
+      StatusBar.setHidden(false);
+    } else {
+      Orientation.lockToLandscape();
+      StatusBar.setHidden(true);
+    }
+    setIsFullscreen(!isFullscreen);
+    setShowControls(true); // Fullscreen switch pe bhi controls dikho
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (youtubePlayerRef.current) {
+        youtubePlayerRef.current.getCurrentTime().then(time => {
+          setCurrentTime(time);
+          setProgrees(time / totalDuration); // Normalize progress
+        });
+      }
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval);
+  }, [totalDuration]);
 
   const youtubePlayerRef = useRef<YoutubeIframeRef>(null);
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -63,6 +150,20 @@ const VideoDetailsScreen = ({navigation}: any) => {
       }),
     ]).start();
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      youtubePlayerRef.current?.getCurrentTime().then(currentTime => {
+        youtubePlayerRef.current?.getDuration().then(duration => {
+          if (duration > 0) {
+            setProgrees(currentTime / duration); // Normalize value between 0 and 1
+          }
+        });
+      });
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval);
+  }, []);
 
   const skipRewind = useCallback(async () => {
     animationButton();
@@ -106,63 +207,171 @@ const VideoDetailsScreen = ({navigation}: any) => {
 
   const onProgress = useCallback(({currentTime, duration}) => {
     setProgrees(currentTime / duration);
+    setTotalDuration(duration); // Store the total video duration
   }, []);
 
-  return (
-    <SafeAreaView style={globalStyles.globalContainer}>
-      <Icon
-        name="arrow-back"
-        size={30}
-        color={colors.white}
-        onPress={() => navigation.navigate(ScreenName.HOME_SCREEN_IN_AUTH)}
-      />
+  const formatTime = seconds => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
 
-      <View style={{marginTop: verticalScale(20)}}>
-        <YouTubeIframe
-          ref={youtubePlayerRef}
-          videoId={videoId}
-          height={250}
-          play={playing}
-          onReady={() => console.log('Video is ready')}
-          onError={e => console.log('Error:', e)}
-          onChangeState={onStateChange}
-          initialPlayerParams={{
-            controls: false,
-            modestbranding: false,
-            rel: false,
-          }}
-          webViewProps={{
-            injectedJavaScript: `
-              document.body.style.pointerEvents = 'none';
-              var style = document.createElement('style');
-              style.innerHTML = \`
-                .ytp-chrome-top, 
-                .ytp-watermark, 
-                .ytp-title, 
-                .ytp-pause-overlay, 
-                .ytp-fullscreen-button, 
-                .ytp-share-button, 
-                .ytp-button { 
-                  display: none !important; 
-                }
-              \`;
-              document.head.appendChild(style);
-            `,
-          }}
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: colors.bgBlack,
+        paddingVertical: scale(14),
+        paddingHorizontal: scale(4),
+      }}>
+      {!isFullscreen && (
+        <Icon
+          name="arrow-back"
+          size={30}
+          color={colors.white}
+          onPress={() => navigation.navigate(ScreenName.HOME_SCREEN_IN_AUTH)}
         />
+      )}
+
+      <View
+        style={[
+          styles.YouTubeIframeStyleContainer,
+          isFullscreen && styles.fullscreenContainer,
+        ]}>
+        <View
+          style={[styles.videoWrapper, isFullscreen && styles.fullscreenVideo]}>
+          <YouTubeIframe
+            ref={youtubePlayerRef}
+            videoId={videoId}
+            height={'100%'}
+            play={playing}
+            onReady={() => console.log('Video is ready')}
+            onProgress={({currentTime}) => setCurrentTime(currentTime)}
+            onError={e => console.log('Error:', e)}
+            onChangeState={onStateChange}
+            initialPlayerParams={{
+              controls: false, // Hide controls
+              modestbranding: false, // Reduce YouTube branding
+              rel: false, // Disable related videos
+              showinfo: false, // Hide title (deprecated, but still useful)
+              iv_load_policy: 3, // Hide annotations
+              fs: 0, // Disable fullscreen button
+              playsinline: 1, // Prevents fullscreen auto-switching
+            }}
+            webViewProps={{
+              injectedJavaScript: `
+        var removeElements = function() {
+          var elements = [
+            '.ytp-chrome-top', 
+            '.ytp-watermark', 
+            '.ytp-title', 
+            '.ytp-title-text', 
+            '.ytp-pause-overlay', 
+            '.ytp-fullscreen-button', 
+            '.ytp-share-button', 
+            '.ytp-button', 
+            '.ytp-settings-button', 
+            '.ytp-subtitles-button', 
+            '.ytp-gradient-bottom', 
+            '.ytp-gradient-top', 
+            '.ytp-spinner', 
+            '.ytp-time-display', 
+            '.ytp-progress-bar', 
+            '.ytp-ad-overlay-container', 
+            '.ytp-autonav-endscreen-upnext', 
+            '.ytp-autonav-endscreen', 
+            '.ytp-cued-thumbnail-overlay', 
+            '.ytp-show-cards-title', 
+            '.ytp-tooltip', 
+            '.ytp-play-button', 
+            '.ytp-endscreen-content', 
+            '.ytp-ce-element', 
+            '.ytp-scroll-min', 
+            '.ytp-caption-window', 
+            '.ytp-caption-segment', 
+            '.ytp-next-button', 
+            '.ytp-autonav-toggle-button-container', 
+            '.ytp-endscreen-previous', 
+            '.ytp-endscreen-next', 
+            '.ytp-title-text', 
+            '.ytp-description-text', 
+            '.ytp-channel-name', 
+            '.ytp-watch-queue-stats'
+          ];
+          
+          elements.forEach(selector => {
+            var el = document.querySelector(selector);
+            if (el) el.style.display = 'none';
+          });
+        };
+
+        // Run function when iframe loads
+        setTimeout(removeElements, 2000);
+        setInterval(removeElements, 500); // Keep hiding elements if they reappear
+
+        // Block all clicks on YouTube iframe
+        var overlay = document.createElement('div');
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.background = 'transparent';
+        overlay.style.zIndex = '9999';
+        overlay.style.pointerEvents = 'auto'; // Block YouTube clicks
+
+        document.body.appendChild(overlay);
+      `,
+            }}
+          />
+        </View>
       </View>
-      <Slider
-        style={styles.progressBar}
-        minimumValue={0}
-        maximumValue={1}
-        value={progress}
-        minimumTrackTintColor="#ff0000"
-        maximumTrackTintColor="#ffffff"
-        thumbTintColor="#ff0000"
-        onSlidingComplete={value => {
-          youtubePlayerRef.current?.seekTo(value * 100, true);
-        }}
-      />
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: scale(10),
+          paddingTop: scale(10),
+        }}>
+        <Text style={{color: colors.white, fontSize: scale(10)}}>
+          {formatTime(currentTime)} / {formatTime(totalDuration - currentTime)}
+        </Text>
+
+        <TouchableOpacity onPress={toggleFullscreen} activeOpacity={0.8}>
+          <FullScreen
+            name={isfullScreen ? 'fullscreen-exit' : 'fullscreen'}
+            size={28}
+            color={colors.white}
+          />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity onPress={handleScreenTap}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: scale(8),
+          }}>
+          <Slider
+            style={styles.progressBar}
+            minimumValue={0}
+            maximumValue={1} // Normalized progress (0 to 1)
+            value={progress} // Updated progress state
+            onValueChange={setProgrees} // Allows UI update while dragging
+            onSlidingStart={() => setPlaying(false)} // Pause while dragging
+            onSlidingComplete={value => {
+              youtubePlayerRef.current?.seekTo(value * totalDuration, true);
+              setPlaying(true); // Resume playing
+            }}
+            minimumTrackTintColor={colors.ButtonColor} // Neon Pink
+            maximumTrackTintColor={colors.gray} // Gray
+            thumbTintColor={colors.ButtonColor} // Transparent thumb
+          />
+        </View>
+      </TouchableOpacity>
+
       <View style={styles.controls}>
         <TouchableOpacity onPress={handlePreviousVideo}>
           <Stepbackward
@@ -172,17 +381,15 @@ const VideoDetailsScreen = ({navigation}: any) => {
           />
         </TouchableOpacity>
 
-        <View>
-          <TouchableOpacity onPress={skipRewind}>
-            <Animated.View style={{transform: [{scale: scaleAnim}]}}>
-              <Icon
-                name="replay-10"
-                size={moderateScale(30)}
-                color={colors.white}
-              />
-            </Animated.View>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={skipRewind}>
+          <Animated.View style={{transform: [{scale: scaleAnim}]}}>
+            <Icon
+              name="replay-10"
+              size={moderateScale(30)}
+              color={colors.white}
+            />
+          </Animated.View>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handlePlayorPause}>
           <Icon
@@ -191,92 +398,137 @@ const VideoDetailsScreen = ({navigation}: any) => {
             color="white"
           />
         </TouchableOpacity>
-        <View>
-          <TouchableOpacity onPress={skipForward}>
-            <Animated.View>
-              <Icon
-                name="forward-10"
-                size={moderateScale(30)}
-                color={colors.white}
-              />
-            </Animated.View>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={skipForward}>
+          <Animated.View>
+            <Icon
+              name="forward-10"
+              size={moderateScale(30)}
+              color={colors.white}
+            />
+          </Animated.View>
+        </TouchableOpacity>
 
-        <View>
-          <TouchableOpacity onPress={handleNextVideo}>
-            <Animated.View>
-              <StepForward
-                name="stepforward"
-                size={moderateScale(24)}
-                color={colors.white}
-              />
-            </Animated.View>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={handleNextVideo}>
+          <Animated.View>
+            <StepForward
+              name="stepforward"
+              size={moderateScale(24)}
+              color={colors.white}
+            />
+          </Animated.View>
+        </TouchableOpacity>
       </View>
-
-      <View style={{marginVertical: verticalScale(20)}}>
-        <ResponsiveText
-          title="Related Videos"
-          fontColor={colors.white}
-          fontWeight="700"
-          fontSize={20}
-          fontStyle={{paddingVertical: scale(10)}}
-        />
-        <FlatList
-          data={CategoryVideo}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) =>
-            item?.id ? item.id.toString() : index.toString()
-          }
-          renderItem={({item, index}) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
-                  videoId: item.id,
-                  videoUrl: item.link,
-                })
-              }
-              style={{marginLeft: index === 0 ? 0 : 15}}>
-              <Image
-                source={{
-                  uri: `https://img.youtube.com/vi/${
-                    item.link.split('/embed/')[1].split('?')[0]
-                  }/0.jpg`,
-                }}
-                style={{
-                  width: Dimensions.get('window').width * 0.6,
-                  height: Dimensions.get('window').height * 0.25,
-                  borderRadius: scale(10),
-                }}
-              />
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+            {!isFullscreen && (
+               <View
+               style={{
+                 marginVertical: verticalScale(20),
+                 paddingHorizontal: scale(8),
+               }}>
+               <ResponsiveText
+                 title="Related Videos"
+                 fontColor={colors.white}
+                 fontWeight="700"
+                 fontSize={20}
+                 fontStyle={{paddingVertical: scale(10)}}
+               />
+               <FlatList
+                 data={CategoryVideo}
+                 horizontal
+                 showsHorizontalScrollIndicator={false}
+                 keyExtractor={(item, index) =>
+                   item?.id ? item.id.toString() : index.toString()
+                 }
+                 renderItem={({item, index}) => (
+                   <TouchableOpacity
+                     onPress={() =>
+                       navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
+                         videoId: item.id,
+                         videoUrl: item.link,
+                       })
+                     }
+                     style={{marginLeft: index === 0 ? 0 : 15}}>
+                     <Image
+                       source={{
+                         uri: `https://img.youtube.com/vi/${
+                           item.link.split('/embed/')[1].split('?')[0]
+                         }/0.jpg`,
+                       }}
+                       style={{
+                         width: Dimensions.get('window').width * 0.6,
+                         height: Dimensions.get('window').height * 0.25,
+                         borderRadius: scale(10),
+                       }}
+                     />
+                   </TouchableOpacity>
+                 )}
+               />
+             </View>
+            )}
+     
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
+export const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
+    padding: 10,
   },
   title: {
-    fontSize: moderateScale(16),
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   progressBar: {
+    width: '100%',
+    height: 5,
+    marginVertical: 8,
+  },
+  YouTubeIframeStyleContainer: {
+    backgroundColor: 'black',
+    width:'100%',
+    height:SCREEN_HEIGHT * 0.25
+  },
+  fullscreenContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: SCREEN_HEIGHT,  // Swap width & height for landscape
+    height: SCREEN_WIDTH,
+    backgroundColor: 'black',
+    zIndex: 9999,
+  },
+  videoWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  fullscreenVideo: {
+    position: 'absolute',
+    width: SCREEN_HEIGHT,
+    height: SCREEN_WIDTH,
+  },
+  overlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  overlayText: {
+    color: '#fff',
+    fontSize: 20,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginVertical: 10,
+    textAlign: 'center',
   },
 });
+
 
 export default VideoDetailsScreen;

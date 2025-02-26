@@ -35,7 +35,7 @@ const TabNavigator = () => {
           } else if (route.name === ScreenName.SHORTS_VIDEO_SCREEN) {
             iconName = focused ? 'video-plus' : 'video-plus-outline';
           } else if (route.name === ScreenName.PROFILE_SCREEN) {
-            iconName = focused ? 'account-outline' : 'account';
+            iconName = focused ? 'account' : 'account-outline';
           }
 
           return <Icon name={iconName} size={size} color={color} />;

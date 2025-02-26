@@ -34,7 +34,7 @@ const browsingTabs = [
     id: 3,
     title: 'Video',
     bgColor: colors.bookmark_check_color,
-    navigationScreen: ScreenName.LIVE_SCREEN,
+    navigationScreen: ScreenName.VIDEO_SCREEN ,
   },
   {
     id: 4,
@@ -82,7 +82,7 @@ const SearchScreenTab = ({navigation}: any) => {
           data={browsingTabs}
           numColumns={2}
           key={2}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={({item, index}) => (
             <TouchableOpacity
               activeOpacity={0.8}

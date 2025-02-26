@@ -31,6 +31,7 @@ const ContinueWithEmailLogin = ({navigation}: any) => {
 
   const onSubmit = (data: any) => {
     console.log(data);
+    navigation.navigate(ScreenName.HOME_SCREEN_IN_AUTH)
   };
 
   const email = watch('email');
@@ -59,8 +60,8 @@ const ContinueWithEmailLogin = ({navigation}: any) => {
             required: 'email',
             pattern: {
               value:
-                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-              message: 'invalid password',
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: 'Email password',
             },
           }}
           render={({field: {onChange, onBlur, value}}) => (

@@ -22,6 +22,7 @@ export const ScreenName = {
     PODCAST_SCREEN:'podcast',
     LIVE_SCREEN:'live',
     SEARCH_SCRREN_MAIN:'search_main',
+    VIDEO_SCREEN:'video-screen',
     //bottom-tabs
     HOME_SCREEN_IN_AUTH:'HomeScreenInAuth',
     SEARCH_SCREEN:'Search',
