@@ -1,29 +1,37 @@
-import {createContext, useEffect, useReducer, useState} from 'react';
+import { createContext, useEffect, useReducer, useState } from 'react';
+import { rootReducer } from './RootReducer/RootReducer';
+import { postInitialState } from './Reducers/postReducer';
+import { authInitialState } from './Reducers/authReducer';
+
+
+
+type AuthContextType = {
+  isLoading: boolean;
+  setIsloading: (loading: boolean) => void;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (auth: boolean) => void;
+  state: typeof initialState;
+  dispatch: React.Dispatch<any>;
+};
 
 const initialState = {
-  artists: [],
-  loading: false,
-  error: null,
+  auth: authInitialState,
+  posts: postInitialState,
 };
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_ARTISTS':
-      return {...state, artists: action.payload, error: null};
-    case 'SET_LOADING':
-      return {...state, loading: action.payload};
-    case 'SET_ERROR':
-      return {...state, error: action.payload, artists: []};
-    default:
-      return state;
-  }
-};
-export const AuthContext = createContext<any>(null);
+export const AuthContext = createContext<AuthContextType>({ 
+  isLoading: true, 
+  setIsloading: () => {}, 
+  isAuthenticated: false, 
+  setIsAuthenticated: () => {}, 
+  state: initialState, 
+  dispatch: () => null 
+});
 
-const ContextProvider = ({children}: any) => {
+const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsloading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<any>(false);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [state, dispatch] = useReducer(rootReducer, initialState);
 
   useEffect(() => {
     setTimeout(() => {
@@ -31,9 +39,13 @@ const ContextProvider = ({children}: any) => {
     }, 1000);
   }, []);
 
+  
+  
+
   return (
     <AuthContext.Provider
-      value={{isLoading, setIsloading, isAuthenticated, state, dispatch}}>
+      value={{ isLoading, setIsloading, isAuthenticated, setIsAuthenticated, state, dispatch }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -6,7 +6,7 @@ export const globalStyles = StyleSheet.create({
   globalContainer: {
     flex: 1,
     backgroundColor: colors.bgBlack1,
-    paddingVertical: scale(24),
+    paddingVertical: scale(18),
     paddingHorizontal: scale(14),
   },
   itemCenter: {

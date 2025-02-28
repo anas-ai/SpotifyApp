@@ -175,7 +175,7 @@ const HomeScreen = ({navigation}: any) => {
       {activeTab === 'Music' && (
         <MusicListComponent
           navigation={navigation}
-          title="Made For Anas"
+          title="All Music"
           songsList={songsList}
         />
       )}

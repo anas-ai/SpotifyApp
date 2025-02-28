@@ -490,14 +490,12 @@ export const styles = StyleSheet.create({
     marginVertical: 8,
   },
   YouTubeIframeStyleContainer: {
-    backgroundColor: 'black',
     height:SCREEN_HEIGHT * 0.26,
-
   },
   fullscreenContainer: {
     top: 0,
     left: 0,
-    width: SCREEN_HEIGHT,  // Swap width & height for landscape
+    width: SCREEN_HEIGHT,  
     height: SCREEN_WIDTH,
     backgroundColor: 'black',
     zIndex: 9999,

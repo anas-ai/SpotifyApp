@@ -7,5 +7,6 @@ export const PNG_IMG = {
   PLAY_BUTTON_PNG: require('../assets/images/play-button.png'),
   THREE_DOTS_PNG:require('../assets/images/three-dots-vertical.png'),
   PAUSE_PNG:require('../assets/images/pause.png'),
-  PLAYING_PNG:require('../assets/images/playing.png')
+  PLAYING_PNG:require('../assets/images/playing.png'),
+  VIRAT_PNG:require('../assets/images/virat.png')
 };
