@@ -4,7 +4,7 @@ import React from 'react'
 
 const PodcastListComponent = () => {
   return (
-    <View>
+    <View >
       <Text>PodcastListComponent</Text>
     </View>
   )

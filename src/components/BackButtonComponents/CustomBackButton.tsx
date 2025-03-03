@@ -9,13 +9,14 @@ const CustomBackButton = ({
   title,
   paddingLeft,
   TitlefontSize,
+  paddingBottom
 }: any) => {
   const handleBack = () => {
     navigation.goBack();
   };
 
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+    <View style={{flexDirection: 'row', alignItems: 'center',paddingBottom:paddingBottom || 0}}>
       <TouchableOpacity activeOpacity={0.8} onPress={handleBack}>
         <Icon name="arrow-back" size={30} color={colors.white} />
       </TouchableOpacity>

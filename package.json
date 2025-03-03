@@ -52,6 +52,7 @@
     "react-native-youtube-iframe": "^2.3.0"
   },
   "devDependencies": {
-    "@react-native/typescript-config": "^0.77.1"
+    "@react-native/typescript-config": "^0.77.1",
+    "@types/jest": "^29.5.14"
   }
 }

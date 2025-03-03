@@ -3,11 +3,11 @@ import {scale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ScreenName} from '../../constants/ScreensNames';
 import HomeScreen from '../../screens/Home';
-import ProfileScreen from '../../screens/ProfielContainer';
 import SearchScreenTab from '../../screens/BottomTapsContainers/SearchContainer';
 import {colors} from '../../styles/color';
 import PostScreen from '../../screens/BottomTapsContainers/PostContainer';
 import ShortsVideoScreen from '../../screens/BottomTapsContainers/ShortsContainers';
+import ProfileScreen from '../../screens/BottomTapsContainers/ProfielContainer';
 
 const Tab = createBottomTabNavigator();
 

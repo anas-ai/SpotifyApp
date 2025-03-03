@@ -3,19 +3,18 @@ import {
   Dimensions,
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import MusicListComponent from '../../components/MusicListComponet/MusicListComponent';
+import PodcastListComponent from '../../components/PodcastListComponent/PodcastListComponent';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import VideoListComponent from '../../components/VideoLlistComponents/VideoListComponent';
 import {ScreenName} from '../../constants/ScreensNames';
 import {colors} from '../../styles/color';
 import {globalStyles} from '../../styles/globalStyles';
-import PostScreen from '../BottomTapsContainers/PostContainer';
 import LiveScreen from '../LiveScreenContainer';
 import MusicScreen from '../MusicScreensContainer';
 
@@ -29,7 +28,6 @@ const HomeTab = [
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
-
 
 export const videoUrls: any = [
   {
@@ -59,11 +57,11 @@ export const videoUrls: any = [
 ];
 
 export interface song {
-  id:string,
-  title:string,
-  artist:string,
-  artwork:string,
-  url:string
+  id: string;
+  title: string;
+  artist: string;
+  artwork: string;
+  url: string;
 }
 
 export const songsList: song[] = [
@@ -117,42 +115,42 @@ const HomeScreen = ({navigation}: any) => {
   return (
     <SafeAreaView style={globalStyles.globalContainer}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <FlatList
-            data={HomeTab}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item, index}) => (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setActiveTab(item?.TabName)}>
-                <ResponsiveText
-                  title={item.TabName}
-                  fontColor={
-                    activeTab === item.TabName ? colors.black : colors.white
-                  }
-                  fontStyle={{
-                    backgroundColor:
-                      activeTab === item.TabName
-                        ? colors.ButtonColor
-                        : 'transparent',
-                    height: screenHeight * 0.04,
-                    width: screenWidth * 0.2,
-                    textAlign: 'center',
-                    padding: scale(2),
-                    borderRadius: scale(10),
-                    paddingTop: scale(5),
-                    marginLeft: index === 0 ? 0 : 10,
-                    borderColor:
-                      activeTab === item.TabName ? colors.white : colors.white,
-                    borderWidth: activeTab === item.TabName ? 0.5 : 1,
-                  }}
-                  fontSize={13}
-                  fontWeight="700"
-                />
-              </TouchableOpacity>
-            )}
-          />
+        <FlatList
+          data={HomeTab}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item, index}) => (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => setActiveTab(item?.TabName)}>
+              <ResponsiveText
+                title={item.TabName}
+                fontColor={
+                  activeTab === item.TabName ? colors.black : colors.white
+                }
+                fontStyle={{
+                  backgroundColor:
+                    activeTab === item.TabName
+                      ? colors.ButtonColor
+                      : 'transparent',
+                  height: screenHeight * 0.04,
+                  width: screenWidth * 0.2,
+                  textAlign: 'center',
+                  padding: scale(2),
+                  borderRadius: scale(10),
+                  paddingTop: scale(5),
+                  marginLeft: index === 0 ? 0 : 10,
+                  borderColor:
+                    activeTab === item.TabName ? colors.white : colors.white,
+                  borderWidth: activeTab === item.TabName ? 0.5 : 1,
+                }}
+                fontSize={13}
+                fontWeight="700"
+              />
+            </TouchableOpacity>
+          )}
+        />
       </View>
 
       {activeTab === 'Home' && (
@@ -162,7 +160,11 @@ const HomeScreen = ({navigation}: any) => {
             title="All Videos"
             videoUrls={videoUrls}
           />
-          <MusicScreen navigation={navigation} />
+          <MusicListComponent
+            navigation={navigation}
+            title="All Music"
+            songsList={songsList}
+          />
         </View>
       )}
       {activeTab === 'Video' && (
@@ -179,7 +181,7 @@ const HomeScreen = ({navigation}: any) => {
           songsList={songsList}
         />
       )}
-      {activeTab === 'Podcast' && <PostScreen />}
+      {activeTab === 'Podcast' && <PodcastListComponent />}
       {activeTab === 'Live' && <LiveScreen />}
     </SafeAreaView>
   );

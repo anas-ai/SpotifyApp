@@ -1,8 +1,8 @@
 import {TextStyle, ViewStyle} from 'react-native';
 
 type ResponsiveTextTypes = {
-  title?: string;
-  fontColor?: string;
+  title?: string | string[];
+  fontColor?: string ;
   fontSize?: number;
   fontWeight?: TextStyle['fontWeight'];
   fontStyle?: TextStyle;

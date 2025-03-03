@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 const AppNavigators = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={ScreenName.HOME_SCREEN_IN_AUTH}>
+      <Stack.Navigator initialRouteName={ScreenName.SIGNUP_OR_LOGIN}>
         {AuthStack.map((item, index) => (
           <Stack.Screen
             key={index}
