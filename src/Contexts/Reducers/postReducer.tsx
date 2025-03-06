@@ -45,7 +45,7 @@ export const postReducer = (state: any, action: any) => {
       case 'ADD_COMMENT':
         return {
           ...state,
-          posts: state.posts.map(post =>
+          posts: state.posts.map(({post}:any) =>
             post.id === action.payload.postId
               ? { 
                   ...post, 

@@ -17,52 +17,55 @@ import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/
 import FavouriteVideo from '../../../components/FavoritsItems/VideoFavroits/FavouriteVideo';
 import ResponsiveText from '../../../components/ResponsiveText/ResponsiveText';
 import { PNG_IMG } from '../../../constants/ImagesName';
+import { useAuth } from '../../../hooks/useAuth';
 import { colors } from '../../../styles/color';
 import SelectPlaylist from '../../SelectAplaylistContainer';
-
-/* ✅ Profile Items */
-const ProfileItems = [
-  {
-    id: 1,
-    icons: 'music',
-    title: 'Liked Songs',
-    count: '0',
-    component: FavoritsSongs,
-  },
-  {
-    id: 3,
-    icons: 'microphone',
-    title: 'Artists',
-    count: '0',
-    component: FavoritsArtists,
-  },
-  {
-    id: 4,
-    icons: 'podcast',
-    title: 'Podcast',
-    count: '0',
-    component: FavroritsPodcast,
-  },
-  {
-    id: 5,
-    icons: 'list',
-    title: 'Playlists',
-    count: '0',
-    component: SelectPlaylist,
-  },
-  {
-    id: 6,
-    icons: 'video',
-    title: 'Videos',
-    count: '0',
-    component: FavouriteVideo,
-  },
-];
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const [selectedComponent, setSelectedComponent] = useState<React.FC | null>(
     null,
   );
+  const {favoriteVideosCount, favoriteSongsCount} = useAuth();
+
+  /* ✅ Profile Items */
+  const ProfileItems = [
+    {
+      id: 1,
+      icons: 'music',
+      title: 'Liked Songs',
+      count: favoriteSongsCount?.toString(),
+      component: FavoritsSongs,
+    },
+    {
+      id: 3,
+      icons: 'microphone',
+      title: 'Artists',
+      count: '0',
+      component: FavoritsArtists,
+    },
+    {
+      id: 4,
+      icons: 'podcast',
+      title: 'Podcast',
+      count: '0',
+      component: FavroritsPodcast,
+    },
+    {
+      id: 5,
+      icons: 'list',
+      title: 'Playlists',
+      count: '0',
+      component: SelectPlaylist,
+    },
+    {
+      id: 6,
+      icons: 'video',
+      title: 'Videos',
+      count: favoriteVideosCount?.toString(),
+      component: FavouriteVideo,
+    },
+  ];
+
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const switchComponent = (component: React.FC | null) => {
@@ -130,19 +133,44 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => switchComponent(item.component)}>
-                  <View style={styles.listItem(index)}>
-                    <ProfileIcons
-                      name={item.icons}
-                      color={colors.white}
-                      size={20}
-                    />
-                    <ResponsiveText
-                      title={item.title}
-                      fontSize={16}
-                      fontColor={colors.white}
-                      style={styles.listText}
-                    />
-                    <View style={styles.countContainer}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: scale(12),
+                      paddingHorizontal: scale(15),
+                      borderBottomWidth: 0.5,
+                      borderBottomColor: '#333',
+                      margin: scale(4),
+                      marginTop: index === 0 ? scale(24) : scale(10),
+                      justifyContent: 'space-between',
+                    }}>
+                    {/* Left Section: Icon + Title */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: scale(10),
+                      }}>
+                      <ProfileIcons
+                        name={item.icons}
+                        color={colors.white}
+                        size={20}
+                      />
+                      <ResponsiveText
+                        title={item.title}
+                        fontSize={16}
+                        fontColor={colors.white}
+                      />
+                    </View>
+
+                    {/* Right Section: Count + Chevron */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: scale(10),
+                      }}>
                       <ResponsiveText
                         title={item.count}
                         fontColor={colors.white}
@@ -160,7 +188,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             />
           </>
         ) : (
-          React.createElement(selectedComponent, {navigation})
+          React.createElement(selectedComponent)
         )}
       </Animated.View>
     </View>
@@ -197,16 +225,7 @@ const styles = StyleSheet.create({
     width: scale(35),
     borderRadius: scale(50),
   },
-  listItem: (index: number) => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: scale(12),
-    paddingHorizontal: scale(15),
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#333',
-    margin: scale(4),
-    marginTop: index === 0 ? scale(24) : scale(10),
-  }),
+
   listText: {
     flex: 1,
     marginLeft: scale(15),

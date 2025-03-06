@@ -26,7 +26,7 @@ import { styles } from './StyleSheet';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const MusicDetailsScreen = ({navigation, route}) => {
+const MusicDetailsScreen = ({navigation, route}:any) => {
   const {selectedSong, songsList} = route.params || {};
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(selectedSong || songsList[0]);

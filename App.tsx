@@ -1,12 +1,36 @@
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, View, AppState} from 'react-native';
+import {useEffect} from 'react';
 import AppNavigators from './src/Navigators/AppNavigators';
 import StatusBarComponent from './src/components/StatusBarComponent/CustomStatusBar';
 import {colors} from './src/styles/color';
 import {useAuth} from './src/hooks/useAuth';
 import {globalStyles} from './src/styles/globalStyles';
+import TrackPlayer from 'react-native-track-player';
 
 const App = () => {
   const {isLoading} = useAuth();
+
+  useEffect(() => {
+    const initTrackPlayer = async () => {
+      await TrackPlayer.setupPlayer();
+    };
+
+    initTrackPlayer();
+
+    // Listen for App State Changes
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        TrackPlayer.pause(); // Pause when app goes in background
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <View
@@ -18,6 +42,7 @@ const App = () => {
       </View>
     );
   }
+
   return (
     <View style={{flex: 1}}>
       <StatusBarComponent backgroundColor={colors.black} />

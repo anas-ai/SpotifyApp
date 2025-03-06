@@ -29,5 +29,10 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+       <!-- Add Track Player Service Here -->
+        <service android:name="com.guichaguri.trackplayer.service.MusicService"
+            android:exported="false"
+            android:stopWithTask="true">
+        </service>
     </application>
 </manifest>

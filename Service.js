@@ -18,8 +18,19 @@ module.exports = async function () {
       TrackPlayer.skipToPrevious();
     });
 
-    TrackPlayer.addEventListener('remote-stop', () => {
-      TrackPlayer.destroy();
+    TrackPlayer.addEventListener('remote-stop', async () => {
+      await TrackPlayer.stop();
+      await TrackPlayer.reset(); // Ensures it completely stops
     });
-  } catch (error) {}
+
+    // Stop the player when the app is killed
+    TrackPlayer.addEventListener('playback-state', async (state) => {
+      if (state.state === TrackPlayer.STATE_STOPPED) {
+        await TrackPlayer.destroy(); // Completely destroy TrackPlayer when stopped
+      }
+    });
+
+  } catch (error) {
+    console.log('TrackPlayer Error:', error);
+  }
 };
