@@ -19,6 +19,8 @@ import LogWithoutPassword from '../screens/LoginWithoutPasswordContainer';
 import MusicDetailsScreen from '../screens/MusicDetailsContainer';
 import MusicScreen from '../screens/MusicScreensContainer';
 import PodcastScreen from '../screens/PodcastContainer';
+import PodcastDetailsScreen from '../screens/PodcastDetailsContainer';
+import podcastDetailsScreen from '../screens/PodcastDetailsContainer';
 import SelectPlaylist from '../screens/SelectAplaylistContainer';
 import SingUpScreen from '../screens/SingUPorLoginContainer';
 import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
@@ -56,4 +58,5 @@ export const AuthStack = [
   {name: ScreenName.LIVE_SCREEN, Component: LiveScreen},
   {name: ScreenName.SEARCH_SCRREN_MAIN, Component: SearchScreenMain},
   {name: ScreenName.VIDEO_SCREEN, Component: VIDEO_SCREEN},
+  {name: ScreenName.PODCAST_DETAILS_SCREEN, Component: PodcastDetailsScreen},
 ];

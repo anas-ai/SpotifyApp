@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -7,16 +7,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {scale} from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import MusicListComponent from '../../components/MusicListComponet/MusicListComponent';
 import PodcastListComponent from '../../components/PodcastListComponent/PodcastListComponent';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import VideoListComponent from '../../components/VideoLlistComponents/VideoListComponent';
-import {ScreenName} from '../../constants/ScreensNames';
-import {colors} from '../../styles/color';
-import {globalStyles} from '../../styles/globalStyles';
+import { ScreenName } from '../../constants/ScreensNames';
+import { colors } from '../../styles/color';
+import { globalStyles } from '../../styles/globalStyles';
 import LiveScreen from '../LiveScreenContainer';
-import MusicScreen from '../MusicScreensContainer';
 
 const HomeTab = [
   {id: 1, TabName: 'Home'},
@@ -56,6 +55,11 @@ export const videoUrls: any = [
   },
 ];
 
+interface PodcastItem {
+  id: number;
+  link: string;
+  title: string;
+}
 export interface song {
   id: string;
   title: string;
@@ -107,6 +111,51 @@ export const songsList: song[] = [
     url: 'https://samplesongs.netlify.app/Without%20Me.mp3',
     id: '6',
   },
+];
+
+export const podcastitem: PodcastItem[] = [
+  {
+    id: 1,
+    link: 'https://www.youtube.com/watch?v=CiaI2NRtC8o',
+    title: 'Podcast 1 ',
+  },
+  {
+    id: 2,
+    link: 'https://www.youtube.com/watch?v=HxjDgR8itZM',
+    title: 'Podcast 2',
+  },
+  {
+    id: 3,
+    link: 'https://www.youtube.com/watch?v=AgQ8RV3zn2A',
+    title: 'Podcast 3 ',
+  },
+  {
+    id: 5,
+    link: 'https://www.youtube.com/watch?v=u3gYBBO3Iro',
+    title: 'Podcast 4 ',
+  },
+  {
+    id: 6,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  },{
+    id: 7,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  },{
+    id: 8,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  },{
+    id: 9,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  },{
+    id: 10,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  }
+  
 ];
 
 const HomeScreen = ({navigation}: any) => {
@@ -181,7 +230,9 @@ const HomeScreen = ({navigation}: any) => {
           songsList={songsList}
         />
       )}
-      {activeTab === 'Podcast' && <PodcastListComponent />}
+      {activeTab === 'Podcast' && (
+        <PodcastListComponent podcastitem={podcastitem} navigation={navigation} />
+      )}
       {activeTab === 'Live' && <LiveScreen />}
     </SafeAreaView>
   );

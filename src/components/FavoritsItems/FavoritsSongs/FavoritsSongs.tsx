@@ -4,6 +4,9 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
+  Text,
+  StyleSheet,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,9 +14,10 @@ import ResponsiveText from '../../ResponsiveText/ResponsiveText';
 import {colors} from '../../../styles/color';
 import {scale} from 'react-native-size-matters';
 import ThreeDot from 'react-native-vector-icons/Entypo';
-import SongsPlayer from '../../SongsPlayerComponents/SongsPlayer';
 import {AuthContext} from '../../../Contexts/Context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import TrackPlayer from 'react-native-track-player';
+import {songsList} from '../../../screens/Home';
 
 type FavoriteItemSongs = {
   id: string;
@@ -24,9 +28,14 @@ type FavoriteItemSongs = {
 };
 
 const FavoritsSongs: React.FC = () => {
-  const {dispatch, state,removeItemsSongs} = useContext(AuthContext);
+  const {dispatch, state, removeItemsSongs} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [favoriteSongs, setFavoriteSongs] = useState<FavoriteItemSongs[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [selectedSong, setSelectedSong] = useState<FavoriteItemSongs | null>(
+    null,
+  );
+  const [playing, setPlaying] = useState(false); // Track if song is playing
 
   useEffect(() => {
     const fetchFavoriteSongs = async () => {
@@ -46,8 +55,66 @@ const FavoritsSongs: React.FC = () => {
     fetchFavoriteSongs();
   }, [state.favorites]); // ✅ Re-fetch when favorites change
 
+  // Toggle Modal
+  const toggleModal = (song: FavoriteItemSongs | null) => {
+    setSelectedSong(song);
+    setIsVisible(!isVisible);
+  };
 
-  
+  // Delete Song from Favorites
+  const deleteSong = () => {
+    if (!selectedSong) {
+      console.log('No song selected for deletion');
+      return;
+    }
+
+    console.log('Removing song:', selectedSong);
+    removeItemsSongs(selectedSong);
+    setFavoriteSongs(prevSongs =>
+      prevSongs.filter(song => song.id !== selectedSong.id),
+    );
+    toggleModal(null);
+  };
+
+  // Add to Playlist (Replace with your playlist logic)
+  const addToPlaylist = () => {
+    toggleModal(null);
+  };
+
+  const playSong = async () => {
+    if (selectedSong) {
+      await TrackPlayer.reset(); // Clears any existing track
+      await TrackPlayer.add({
+        id: selectedSong.id,
+        url: selectedSong.url, // Ensure this URL is a valid audio file
+        title: selectedSong.title,
+        artist: selectedSong.artist,
+        artwork: selectedSong.artwork,
+      });
+      await TrackPlayer.play(); // Start playing
+    }
+    toggleModal(null);
+  };
+
+  const playPauseSong = async () => {
+    if (playing) {
+      await TrackPlayer.pause(); // Pause the song
+      setPlaying(false);
+    } else if (selectedSong) {
+      await TrackPlayer.reset(); // Clears the previous track
+      await TrackPlayer.add({
+        id: selectedSong.id,
+        url: selectedSong.url,
+        title: selectedSong.title,
+        artist: selectedSong.artist,
+        artwork: selectedSong.artwork,
+      });
+      await TrackPlayer.play(); // Start playing
+      setPlaying(true);
+    }
+    toggleModal(null);
+  };
+
   return (
     <View
       style={{
@@ -87,6 +154,7 @@ const FavoritsSongs: React.FC = () => {
           ListFooterComponent={<View style={{height: scale(80)}} />}
           ListHeaderComponent={<View style={{marginTop: scale(20)}} />}
           showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
           renderItem={({item}) => (
             <View
               style={{
@@ -137,11 +205,11 @@ const FavoritsSongs: React.FC = () => {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => removeItemsSongs(item)}>
+              <TouchableOpacity onPress={() => toggleModal(item)}>
                 <ThreeDot
                   name="dots-three-vertical"
                   size={scale(20)}
-                  color="red"
+                  color={colors.white}
                   style={{width: scale(30)}}
                 />
               </TouchableOpacity>
@@ -149,8 +217,75 @@ const FavoritsSongs: React.FC = () => {
           )}
         />
       )}
+
+      {/* Modal for Actions */}
+      <Modal
+        transparent={true}
+        visible={isVisible}
+        animationType="fade"
+        onRequestClose={() => toggleModal(null)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => toggleModal(null)}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              onPress={playPauseSong}
+              style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>
+                {playing ? '⏸️ Pause Song' : '▶️ Play Song'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={addToPlaylist}
+              style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>➕ Add to Playlist</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={deleteSong}
+              style={styles.modalButtonDelete}>
+              <Text style={styles.modalButtonText}>🗑️ Delete Song</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center' as 'center', // ✅ Fix here
+    alignItems: 'center' as 'center', // ✅ Fix here
+  },
+  modalContent: {
+    backgroundColor: '#1E1E1E',
+    padding: scale(20),
+    borderRadius: scale(10),
+    width: '80%',
+  },
+  modalButton: {
+    backgroundColor: '#333',
+    paddingVertical: scale(12),
+    borderRadius: scale(5),
+    marginVertical: scale(5),
+    alignItems: 'center' as 'center', // ✅ Fix here
+  },
+  modalButtonDelete: {
+    backgroundColor: 'red',
+    paddingVertical: scale(12),
+    borderRadius: scale(5),
+    marginVertical: scale(5),
+    alignItems: 'center' as 'center', // ✅ Fix here
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: scale(14),
+    fontWeight: 'bold',
+  },
+});
 
 export default FavoritsSongs;

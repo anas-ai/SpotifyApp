@@ -17,7 +17,7 @@ const TabNavigator = () => {
       screenOptions={({route}: any) => ({
         tabBarStyle: {
           height: scale(56),
-          backgroundColor: colors.bgBlack1,
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
           position: 'absolute',
           elevation: 1,
           borderTopWidth: 1,

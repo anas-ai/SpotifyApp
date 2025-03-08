@@ -1,12 +1,14 @@
 import {View, Text} from 'react-native';
 import PodcastListComponent from '../../components/PodcastListComponent/PodcastListComponent';
-import { globalStyles } from '../../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 import CustomBackButton from '../../components/BackButtonComponents/CustomBackButton';
+import {podcastitem} from '../Home';
 
-const PodcastScreen = ({navigation}:any) => {
+const PodcastScreen = ({navigation}: any) => {
   return (
     <View style={globalStyles.globalContainer}>
-      <PodcastListComponent />
+      <CustomBackButton navigation={navigation} title='Podcast'/>
+      <PodcastListComponent podcastitem={podcastitem} navigation={navigation}/>
     </View>
   );
 };
