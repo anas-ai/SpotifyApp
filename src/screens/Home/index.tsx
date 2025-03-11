@@ -130,29 +130,21 @@ export const podcastitem: PodcastItem[] = [
     title: 'Podcast 3 ',
   },
   {
-    id: 5,
+    id: 4,
     link: 'https://www.youtube.com/watch?v=u3gYBBO3Iro',
     title: 'Podcast 4 ',
   },
   {
+    id: 5,
+    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    title: 'Podcast 5 ',
+  },{
     id: 6,
     link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
     title: 'Podcast 5 ',
   },{
     id: 7,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
-    title: 'Podcast 5 ',
-  },{
-    id: 8,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
-    title: 'Podcast 5 ',
-  },{
-    id: 9,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
-    title: 'Podcast 5 ',
-  },{
-    id: 10,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
+    link: 'https://www.youtube.com/watch?v=NNH-RLNyzoM',
     title: 'Podcast 5 ',
   }
   
@@ -162,7 +154,7 @@ const HomeScreen = ({navigation}: any) => {
   const [activeTab, setActiveTab] = useState('Home');
 
   return (
-    <SafeAreaView style={globalStyles.globalContainer}>
+    <SafeAreaView style={[globalStyles.globalContainer,{paddingTop:scale(40)}]}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <FlatList
           data={HomeTab}
@@ -201,7 +193,6 @@ const HomeScreen = ({navigation}: any) => {
           )}
         />
       </View>
-
       {activeTab === 'Home' && (
         <View>
           <VideoListComponent

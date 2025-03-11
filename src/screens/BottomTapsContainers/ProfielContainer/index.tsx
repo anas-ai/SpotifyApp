@@ -3,6 +3,7 @@ import {
   Animated,
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -84,7 +85,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerStyle}>
         <TouchableOpacity
           activeOpacity={0.8}
@@ -109,7 +110,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               <View style={styles.ProfileImageContainer}>
                 <Image source={PNG_IMG.VIRAT_PNG} style={styles.profileImage} />
                 <ResponsiveText
-                  title="Anas Rizvi"
+                  title="user"
                   fontColor={colors.white}
                   fontWeight="400"
                   fontSize={16}
@@ -191,7 +192,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
           React.createElement(selectedComponent)
         )}
       </Animated.View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -199,6 +200,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bgBlack1,
+    paddingTop:scale(40)
   },
   headerStyle: {
     flexDirection: 'row',

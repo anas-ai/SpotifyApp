@@ -268,7 +268,7 @@ const VideoDetailsScreen = ({ navigation }: any) => {
       dispatch({ type: 'REMOVE_FROM_FAVORITES_VIDEOS', payload: currentVideo.id }); // FIX: Pass only ID
       Toast.show('Video removed from favorites', {
         type: 'danger', // FIX: Corrected "denger" to "danger"
-        placement: 'top',
+        placement: 'bottom',
         duration: 4000,
         animationType: 'slide-in',
       });
@@ -278,7 +278,7 @@ const VideoDetailsScreen = ({ navigation }: any) => {
       dispatch({ type: 'ADD_TO_FAVORITES_VIDEOS', payload: currentVideo }); // FIX: Correct action type
       Toast.show('Video added to favorites', {
         type: 'success',
-        placement: 'top',
+        placement: 'bottom',
         duration: 4000,
         animationType: 'slide-in',
       });
@@ -299,19 +299,9 @@ const VideoDetailsScreen = ({ navigation }: any) => {
       style={{
         flex: 1,
         backgroundColor: colors.bgBlack,
-        paddingVertical: scale(14),
         paddingHorizontal: scale(4),
       }}>
-      {!isFullscreen && (
-        <Icon
-          name="arrow-back"
-          size={30}
-          color={colors.white}
-          onPress={() =>
-            navigation.navigate(ScreenName.HOME_SCREEN_IN_AUTH)
-          }
-        />
-      )}
+      
 
       <View style={[styles.YouTubeIframeStyleContainer]}>
         <View style={[styles.videoWrapper]}>
@@ -401,12 +391,12 @@ const VideoDetailsScreen = ({ navigation }: any) => {
         <Text style={{ color: colors.white, fontSize: scale(10) }}>
           {formatTime(currentTime)} / {formatTime(totalDuration - currentTime)}
         </Text>
-        <TouchableOpacity onPress={toggleFavoriteVideo}>
+        <TouchableOpacity onPress={toggleFavoriteVideo} style={{position:'absolute'}}>
           <HeartIcon
             name={isFavorites ? 'heart' : 'hearto'}
             size={scale(20)}
             color={isFavorites ? 'red' : colors.white}
-            style={{ width: scale(30) }}
+            style={{ width: scale(30) ,bottom:scale(30),left:scale(10)}}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleFullscreen} activeOpacity={0.8}>

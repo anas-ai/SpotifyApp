@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import {colors} from '../../styles/color';
@@ -24,7 +25,7 @@ const VideoListComponent = ({
   videoUrls: any;
 }) => {
   return (
-    <View style={{marginTop: scale(10)}}>
+    <SafeAreaView style={{marginTop: scale(10)}}>
       <ResponsiveText
         title={title}
         fontColor={colors.white}
@@ -71,7 +72,7 @@ const VideoListComponent = ({
           </TouchableOpacity>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
