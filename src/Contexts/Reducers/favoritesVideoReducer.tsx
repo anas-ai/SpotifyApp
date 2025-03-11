@@ -22,6 +22,8 @@ type FavoriteVideosAction =
       type: 'REMOVE_FROM_FAVORITES_VIDEOS';
     }
   | {type: 'CLEAR_FAVORITES_VIDEOS'};
+
+  
 export const VideoInitialState: FavoriteVideosState = {
   favoritesVideo: [],
 };
