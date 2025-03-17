@@ -14,13 +14,13 @@ import ProfileIcons from 'react-native-vector-icons/FontAwesome5';
 import Chevronforward from 'react-native-vector-icons/Ionicons';
 import FavoritsArtists from '../../../components/FavoritsItems/ArtistsComponent/FavoritsArtistsComponet';
 import FavoritsSongs from '../../../components/FavoritsItems/FavoritsSongs/FavoritsSongs';
-import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcase';
 import FavouriteVideo from '../../../components/FavoritsItems/VideoFavroits/FavouriteVideo';
 import ResponsiveText from '../../../components/ResponsiveText/ResponsiveText';
 import { PNG_IMG } from '../../../constants/ImagesName';
 import { useAuth } from '../../../hooks/useAuth';
 import { colors } from '../../../styles/color';
 import SelectPlaylist from '../../SelectAplaylistContainer';
+import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcast';
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const [selectedComponent, setSelectedComponent] = useState<React.FC | null>(
@@ -49,7 +49,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
       icons: 'podcast',
       title: 'Podcast',
       count: '0',
-      component: FavroritsPodcast,
+      component: FavroritsPodcast ,
     },
     {
       id: 5,

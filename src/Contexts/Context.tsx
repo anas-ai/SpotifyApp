@@ -5,6 +5,7 @@ import {authInitialState} from './Reducers/authReducer';
 import {favoritesInitialState} from './Reducers/favoritesReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {VideoInitialState} from './Reducers/favoritesVideoReducer';
+import { PodcastInitialState } from './Reducers/favPodcastReducer';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -24,6 +25,7 @@ const initialState = {
   posts: postInitialState,
   favorites: favoritesInitialState,
   favoritesVideos: VideoInitialState,
+  favoritesPodcast:PodcastInitialState
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -61,17 +63,21 @@ const ContextProvider = ({children}: {children: React.ReactNode}) => {
   const [favoriteSongsCount, setFavoriteSongsCount] = useState(0);
   const [favoritesVideo, setFavoriteVideo] = useState<FavoriteItemVideo[]>([]);
   const [favoriteSongs, setFavoriteSongs] = useState<FavoriteItemSongs[]>([]);
+  const [favoritesPodcast,setFavoritePodcast] = useState([])
 
   const fetchCounts = async () => {
     try {
       const songs = await AsyncStorage.getItem('favoriteSongs');
       const videos = await AsyncStorage.getItem('video');
+      const podcast = await AsyncStorage.getItem('podcast');
 
       const songsCount = songs ? JSON.parse(songs).length : 0;
       const videosCount = videos ? JSON.parse(videos).length : 0;
+      const podcastCount = podcast ? JSON.parse(podcast).length :0
 
       setFavoriteSongsCount(songsCount);
       setFavoriteVideosCount(videosCount);
+      setFavoritePodcast(podcastCount)
     } catch (error) {
       console.error('Error fetching counts:', error);
     }
@@ -100,6 +106,8 @@ const ContextProvider = ({children}: {children: React.ReactNode}) => {
       console.log('Error fetching favorite songs:', error);
     }
   };
+
+  
 
   const loadFavorites = async () => {
     try {

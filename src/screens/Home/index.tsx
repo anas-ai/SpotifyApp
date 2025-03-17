@@ -55,11 +55,7 @@ export const videoUrls: any = [
   },
 ];
 
-interface PodcastItem {
-  id: number;
-  link: string;
-  title: string;
-}
+
 export interface song {
   id: string;
   title: string;
@@ -112,6 +108,12 @@ export const songsList: song[] = [
     id: '6',
   },
 ];
+
+export interface PodcastItem {
+  id: number;
+  link: string;
+  title: string;
+}
 
 export const podcastitem: PodcastItem[] = [
   {
