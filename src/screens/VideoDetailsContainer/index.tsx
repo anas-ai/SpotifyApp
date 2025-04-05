@@ -20,7 +20,6 @@ import YouTubeIframe, { YoutubeIframeRef } from 'react-native-youtube-iframe';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import { ScreenName } from '../../constants/ScreensNames';
 import { colors } from '../../styles/color';
-import { globalStyles } from '../../styles/globalStyles';
 import { videoUrls } from '../Home';
 import Orientation from 'react-native-orientation-locker';
 import FullScreen from 'react-native-vector-icons/MaterialCommunityIcons';

@@ -30,6 +30,7 @@ export const ScreenName = {
     POST_SCREEN:'Post',
     SHORTS_VIDEO_SCREEN:'short',
     PROFILE_SCREEN:'Profile',
+    FAV_PODCAST_SCREEN:'favpodcast'
 
 
 

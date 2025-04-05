@@ -11,6 +11,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ScreenName } from '../../constants/ScreensNames';
 import { colors } from '../../styles/color';
+import { moderateScale, scale } from 'react-native-size-matters';
 
 const bgcolors = {
   white: '#FFFFFF',
@@ -168,41 +169,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bgBlack,
-    padding: 16,
+    padding: scale(16),
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: moderateScale(28),
     fontWeight: 'bold',
     color: bgcolors.white,
-    marginBottom: 20,
+    marginBottom: scale(20),
   },
   card: {
-    flexDirection: 'row',
+    flexDirection: 'column', // Stack elements vertically
     alignItems: 'center',
-    margin: 8,
-    borderRadius: 10,
-    padding: 10,
-    justifyContent: 'space-between',
-    position: 'relative',
-    height: 100,
-    width: 150,
+    justifyContent: 'center',
+    margin: scale(8),
+    borderRadius: scale(10),
+    padding: scale(10),
+    height: scale(120), // Increase height for better spacing
+    width: scale(145),
   },
   selectedCard: {
     borderWidth: 2,
     borderColor: bgcolors.white,
   },
   artistImg: {
-    width: 80,
-    height: 150,
-    borderRadius: 25,
-    resizeMode: 'contain',
+    width: scale(60), // Reduce size to fit well
+    height: scale(50),
+    borderRadius: scale(25),
+    resizeMode: 'cover',
+    marginTop: scale(8),
   },
   language: {
     color: bgcolors.white,
-    fontSize: 18,
+    fontSize: scale(16),
     fontWeight: 'bold',
-    flex: 1,
+    textAlign: 'center', // Center text
   },
   checkmark: {
     position: 'absolute',
@@ -222,3 +223,4 @@ const styles = StyleSheet.create({
     color: bgcolors.black,
   },
 });
+

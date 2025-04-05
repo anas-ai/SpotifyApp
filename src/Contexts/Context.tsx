@@ -146,6 +146,7 @@ const ContextProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+
   const removeItemsSongs = async (item?: FavoriteItemSongs) => {
     if (!item || !item.id) {
       console.error(
@@ -181,6 +182,8 @@ const ContextProvider = ({children}: {children: React.ReactNode}) => {
       console.log('Error removing song:', error);
     }
   };
+
+  
 
   useEffect(() => {
     loadFavorites();

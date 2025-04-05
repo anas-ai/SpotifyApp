@@ -22,10 +22,11 @@ import { colors } from '../../../styles/color';
 import SelectPlaylist from '../../SelectAplaylistContainer';
 import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcast';
 
-const ProfileScreen = ({navigation}: {navigation: any}) => {
-  const [selectedComponent, setSelectedComponent] = useState<React.FC | null>(
-    null,
-  );
+const ProfileScreen = ({navigation}: any) => {
+  type NavigableComponent = React.FC<{ navigation: any }>;
+
+  const [selectedComponent, setSelectedComponent] = useState<NavigableComponent | null>(null);
+
   const {favoriteVideosCount, favoriteSongsCount} = useAuth();
 
   /* ✅ Profile Items */
@@ -189,7 +190,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             />
           </>
         ) : (
-          React.createElement(selectedComponent)
+          React.createElement(selectedComponent, { navigation })
         )}
       </Animated.View>
     </SafeAreaView>
