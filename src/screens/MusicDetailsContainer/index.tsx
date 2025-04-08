@@ -1,32 +1,36 @@
 import Slider from '@react-native-community/slider';
-import { Divider } from '@rneui/themed';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {Divider} from '@rneui/themed';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
+  Pressable,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import LinearGradient from 'react-native-linear-gradient';
-import { scale } from 'react-native-size-matters';
-import TrackPlayer, { Capability } from 'react-native-track-player';
-import IconPlay, { default as IconPlus } from 'react-native-vector-icons/AntDesign';
+import {scale} from 'react-native-size-matters';
+import TrackPlayer, {Capability} from 'react-native-track-player';
+import IconPlay, {
+  default as IconPlus,
+} from 'react-native-vector-icons/AntDesign';
 import ShuffleIcon from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RecommenDationsModel from '../../components/RecommenDationsModel/RecommenDationsModel';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import SongsPlayer from '../../components/SongsPlayerComponents/SongsPlayer';
-import { PNG_IMG } from '../../constants/ImagesName';
-import { ScreenName } from '../../constants/ScreensNames';
-import { colors } from '../../styles/color';
-import { styles } from './StyleSheet';
+import {PNG_IMG} from '../../constants/ImagesName';
+import {ScreenName} from '../../constants/ScreensNames';
+import {colors} from '../../styles/color';
+import {styles} from './StyleSheet';
+import ModalComponent from '../../components/ModelComponet/ModalComponet';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const MusicDetailsScreen = ({navigation, route}:any) => {
+const MusicDetailsScreen = ({navigation, route}: any) => {
   const {selectedSong, songsList} = route.params || {};
   const [playing, setPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(selectedSong || songsList[0]);
@@ -36,7 +40,10 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
   const [showBottomPlayer, setShowBottomPlayer] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [recommenDationsModelVisibal,setRecommenDationsModelVisibal] = useState<boolean>(false)
+  const [recommenDationsModelVisibal, setRecommenDationsModelVisibal] =
+    useState<boolean>(false);
+
+  const [artisModalVisible, setArtisModelVisible] = useState(false);
 
   const playNextSong = useCallback(() => {
     setCurrentIndex(prevIndex =>
@@ -155,7 +162,6 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
     }
   };
 
- 
   const RestSongs =
     songsList?.filter(item => item?.id !== selectedSong?.id) || [];
 
@@ -247,23 +253,14 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
               borderRadius: scale(20),
             }}
           />
-          <IconPlus
-            name="pluscircleo"
-            size={scale(22)}
-            color={colors.gray}
-            style={{width: scale(30)}}
-          />
-          <TouchableOpacity onPress={handleActionSheetOpen}>
-            <Image
-              source={PNG_IMG.THREE_DOTS_PNG}
-              style={{
-                height: scale(22),
-                width: scale(22),
-                tintColor: colors.gray,
-                resizeMode: 'contain',
-              }}
+          <Pressable onPress={handleActionSheetOpen}>
+            <IconPlus
+              name="pluscircleo"
+              size={scale(22)}
+              color={colors.gray}
+              style={{width: scale(30)}}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           <ActionSheet
             containerStyle={styles.ActionSheetContianer}
@@ -428,6 +425,8 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
               </View>
             </View>
 
+            {/* <ModalComponent /> */}
+
             {/* Playing Indicator & More Options */}
             <View
               style={{
@@ -465,7 +464,7 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
           style={{
             backgroundColor: 'rgba(0,0,0,0.7)',
             width: '100%',
-            height: screenHeight * 0.1, // Increased height for better visibility
+            height: screenHeight * 0.1,
             position: 'absolute',
             bottom: 10,
             alignSelf: 'center',
@@ -581,7 +580,10 @@ const MusicDetailsScreen = ({navigation, route}:any) => {
         onNext={playNextSong}
         onPreves={playPreviousSong}
       />
-      <RecommenDationsModel isVisible = {recommenDationsModelVisibal} setIsVisible={setRecommenDationsModelVisibal}/>
+      <RecommenDationsModel
+        isVisible={recommenDationsModelVisibal}
+        setIsVisible={setRecommenDationsModelVisibal}
+      />
     </LinearGradient>
   );
 };

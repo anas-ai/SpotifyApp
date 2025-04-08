@@ -1,13 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import LiveComponent from '../../components/LiveComponent/LiveComponent'
+import { View } from 'react-native';
+import LiveComponent from '../../components/LiveComponent/LiveComponent';
 
-const LiveScreen = () => {
+const LiveScreen = ({navigation}: {navigation: any}) => {
   return (
     <View>
       <LiveComponent/>
     </View>
-  )
-}
+  );
+};
 
-export default LiveScreen
+export default LiveScreen;

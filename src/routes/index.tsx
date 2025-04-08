@@ -1,4 +1,4 @@
-import {ScreenName} from '../constants/ScreensNames';
+import { ScreenName } from '../constants/ScreensNames';
 import TabNavigator from '../Navigators/TabNavigator/TabNavigator';
 import AuthScreen from '../screens/AuthContainer';
 import PostScreen from '../screens/BottomTapsContainers/PostContainer';
@@ -13,6 +13,7 @@ import CreateAccount from '../screens/CreateAccountContaienr';
 import CreatePassword from '../screens/CreatePasswordContainer';
 import DateOfBirthScreen from '../screens/DateOfBirthContainer';
 import GenderScreen from '../screens/GenderContaienr';
+import LiveDetailsScreen from '../screens/LiveDetailsScreen';
 import LiveScreen from '../screens/LiveScreenContainer';
 import LoginScreen from '../screens/LoginConainer';
 import LogWithoutPassword from '../screens/LoginWithoutPasswordContainer';
@@ -20,7 +21,6 @@ import MusicDetailsScreen from '../screens/MusicDetailsContainer';
 import MusicScreen from '../screens/MusicScreensContainer';
 import PodcastScreen from '../screens/PodcastContainer';
 import PodcastDetailsScreen from '../screens/PodcastDetailsContainer';
-import podcastDetailsScreen from '../screens/PodcastDetailsContainer';
 import PodcastFavScrreen from '../screens/PodcastFavContaienr';
 import SelectPlaylist from '../screens/SelectAplaylistContainer';
 import SingUpScreen from '../screens/SingUPorLoginContainer';
@@ -61,4 +61,5 @@ export const AuthStack = [
   {name: ScreenName.VIDEO_SCREEN, Component: VIDEO_SCREEN},
   {name: ScreenName.PODCAST_DETAILS_SCREEN, Component: PodcastDetailsScreen},
   {name: ScreenName.FAV_PODCAST_SCREEN, Component: PodcastFavScrreen},
+  {name: ScreenName.LIVE_DETAILS_SCREEN, Component: LiveDetailsScreen},
 ];

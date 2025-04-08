@@ -6,6 +6,7 @@ import {favoritesInitialState} from './Reducers/favoritesReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {VideoInitialState} from './Reducers/favoritesVideoReducer';
 import { PodcastInitialState } from './Reducers/favPodcastReducer';
+import { LiveInitialState } from './Reducers/liveFvReducer';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -25,7 +26,8 @@ const initialState = {
   posts: postInitialState,
   favorites: favoritesInitialState,
   favoritesVideos: VideoInitialState,
-  favoritesPodcast:PodcastInitialState
+  favoritesPodcast:PodcastInitialState,
+  favoritesLive:LiveInitialState
 };
 
 export const AuthContext = createContext<AuthContextType>({

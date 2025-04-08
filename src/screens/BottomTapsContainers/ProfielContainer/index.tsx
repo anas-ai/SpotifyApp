@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
   FlatList,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { scale } from 'react-native-size-matters';
+import {scale} from 'react-native-size-matters';
 import SettingIcons from 'react-native-vector-icons/Feather';
 import ProfileIcons from 'react-native-vector-icons/FontAwesome5';
 import Chevronforward from 'react-native-vector-icons/Ionicons';
@@ -16,16 +16,17 @@ import FavoritsArtists from '../../../components/FavoritsItems/ArtistsComponent/
 import FavoritsSongs from '../../../components/FavoritsItems/FavoritsSongs/FavoritsSongs';
 import FavouriteVideo from '../../../components/FavoritsItems/VideoFavroits/FavouriteVideo';
 import ResponsiveText from '../../../components/ResponsiveText/ResponsiveText';
-import { PNG_IMG } from '../../../constants/ImagesName';
-import { useAuth } from '../../../hooks/useAuth';
-import { colors } from '../../../styles/color';
+import {PNG_IMG} from '../../../constants/ImagesName';
+import {useAuth} from '../../../hooks/useAuth';
+import {colors} from '../../../styles/color';
 import SelectPlaylist from '../../SelectAplaylistContainer';
 import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcast';
 
 const ProfileScreen = ({navigation}: any) => {
-  type NavigableComponent = React.FC<{ navigation: any }>;
+  type NavigableComponent = React.FC<{navigation: any}>;
 
-  const [selectedComponent, setSelectedComponent] = useState<NavigableComponent | null>(null);
+  const [selectedComponent, setSelectedComponent] =
+    useState<NavigableComponent | null>(null);
 
   const {favoriteVideosCount, favoriteSongsCount} = useAuth();
 
@@ -35,36 +36,37 @@ const ProfileScreen = ({navigation}: any) => {
       id: 1,
       icons: 'music',
       title: 'Liked Songs',
-      count: favoriteSongsCount?.toString(),
+      // count: favoriteSongsCount?.toString(),
       component: FavoritsSongs,
     },
+    // {
+    //   id: 3,
+    //   icons: 'microphone',
+    //   title: 'Artists',
+    //   count: '0',
+    //   component: FavoritsArtists,
+    // },
+
+    // {
+    //   id: 5,
+    //   icons: 'list',
+    //   title: 'Playlists',
+    //   count: '0',
+    //   component: SelectPlaylist,
+    // },
     {
-      id: 3,
-      icons: 'microphone',
-      title: 'Artists',
-      count: '0',
-      component: FavoritsArtists,
+      id: 6,
+      icons: 'video',
+      title: 'Videos',
+      // count: favoriteVideosCount?.toString(),
+      component: FavouriteVideo,
     },
     {
       id: 4,
       icons: 'podcast',
       title: 'Podcast',
-      count: '0',
-      component: FavroritsPodcast ,
-    },
-    {
-      id: 5,
-      icons: 'list',
-      title: 'Playlists',
-      count: '0',
-      component: SelectPlaylist,
-    },
-    {
-      id: 6,
-      icons: 'video',
-      title: 'Videos',
-      count: favoriteVideosCount?.toString(),
-      component: FavouriteVideo,
+      // count: '0',
+      component: FavroritsPodcast,
     },
   ];
 
@@ -190,7 +192,7 @@ const ProfileScreen = ({navigation}: any) => {
             />
           </>
         ) : (
-          React.createElement(selectedComponent, { navigation })
+          React.createElement(selectedComponent, {navigation})
         )}
       </Animated.View>
     </SafeAreaView>
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bgBlack1,
-    paddingTop:scale(40)
+    paddingTop: scale(40),
   },
   headerStyle: {
     flexDirection: 'row',
