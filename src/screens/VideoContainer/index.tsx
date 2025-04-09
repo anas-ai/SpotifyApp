@@ -13,6 +13,7 @@ const VIDEO_SCREEN = ({navigation}: any) => {
         navigation={navigation}
         videoUrls={videoUrls}
         title="Videos"
+        isHorizontal={true}
       />
     </View>
   );

@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import {
   Dimensions,
   FlatList,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { scale } from 'react-native-size-matters';
+import {scale} from 'react-native-size-matters';
 import MusicListComponent from '../../components/MusicListComponet/MusicListComponent';
 import PodcastListComponent from '../../components/PodcastListComponent/PodcastListComponent';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
 import VideoListComponent from '../../components/VideoLlistComponents/VideoListComponent';
-import { ScreenName } from '../../constants/ScreensNames';
-import { colors } from '../../styles/color';
-import { globalStyles } from '../../styles/globalStyles';
+import {ScreenName} from '../../constants/ScreensNames';
+import {colors} from '../../styles/color';
+import {globalStyles} from '../../styles/globalStyles';
 import LiveScreen from '../LiveScreenContainer';
+import LiveComponent from '../../components/LiveComponent/LiveComponent';
 
 const HomeTab = [
   {id: 1, TabName: 'Home'},
@@ -42,19 +44,18 @@ export const videoUrls: any = [
     link: 'https://www.youtube.com/embed/4kGVdHt0U5o',
   },
   {
-    id: 5,
-    link: 'https://www.youtube.com/embed/NXM37eeDF74',
+    id: 4,
+    link: 'https://www.youtube.com/embed/9a4izd3Rvdw',
   },
   {
-    id: 6,
+    id: 5,
     link: 'https://www.youtube.com/embed/A_1V9AColh4',
   },
   {
-    id: 7,
+    id: 6,
     link: 'https://www.youtube.com/embed/V258-P0Zhs8',
   },
 ];
-
 
 export interface song {
   id: string;
@@ -140,23 +141,25 @@ export const podcastitem: PodcastItem[] = [
     id: 5,
     link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
     title: 'Podcast 5 ',
-  },{
+  },
+  {
     id: 6,
     link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
     title: 'Podcast 5 ',
-  },{
+  },
+  {
     id: 7,
     link: 'https://www.youtube.com/watch?v=NNH-RLNyzoM',
     title: 'Podcast 5 ',
-  }
-  
+  },
 ];
 
 const HomeScreen = ({navigation}: any) => {
   const [activeTab, setActiveTab] = useState('Home');
 
   return (
-    <SafeAreaView style={[globalStyles.globalContainer,{paddingTop:scale(40)}]}>
+    <SafeAreaView
+      style={[globalStyles.globalContainer, {paddingTop: scale(20)}]}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <FlatList
           data={HomeTab}
@@ -165,7 +168,8 @@ const HomeScreen = ({navigation}: any) => {
           keyExtractor={item => item.id.toString()}
           renderItem={({item, index}) => (
             <TouchableOpacity
-              activeOpacity={0.8}
+              style={{paddingBottom: 20}}
+              activeOpacity={0.9}
               onPress={() => setActiveTab(item?.TabName)}>
               <ResponsiveText
                 title={item.TabName}
@@ -196,18 +200,29 @@ const HomeScreen = ({navigation}: any) => {
         />
       </View>
       {activeTab === 'Home' && (
-        <View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{marginBottom: scale(40)}}>
           <VideoListComponent
             navigation={navigation}
             title="All Videos"
             videoUrls={videoUrls}
+            isHorizontal={true}
           />
           <MusicListComponent
             navigation={navigation}
             title="All Music"
             songsList={songsList}
+            isHorizontal={true}
           />
-        </View>
+          <PodcastListComponent
+            podcastitem={podcastitem}
+            navigation={navigation}
+            isHorizontal={true}
+            subTitle="Trending Podcasts"
+          />
+          <LiveComponent isHorizontal={true} title="Live" />
+        </ScrollView>
       )}
       {activeTab === 'Video' && (
         <VideoListComponent
@@ -224,9 +239,12 @@ const HomeScreen = ({navigation}: any) => {
         />
       )}
       {activeTab === 'Podcast' && (
-        <PodcastListComponent podcastitem={podcastitem} navigation={navigation} />
+        <PodcastListComponent
+          podcastitem={podcastitem}
+          navigation={navigation}
+        />
       )}
-      {activeTab === 'Live' && <LiveScreen />}
+      {activeTab === 'Live' && <LiveScreen navigation={navigation} />}
     </SafeAreaView>
   );
 };

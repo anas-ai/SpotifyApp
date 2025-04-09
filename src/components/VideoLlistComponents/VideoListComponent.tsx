@@ -14,39 +14,47 @@ import {ScreenName} from '../../constants/ScreensNames';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-
 const VideoListComponent = ({
   navigation,
   title = '',
   videoUrls = [],
+  isHorizontal = false,
 }: {
   navigation: any;
   title: string;
   videoUrls: any;
+  isHorizontal: boolean;
 }) => {
   return (
-    <SafeAreaView style={{marginTop: scale(10)}}>
+    <SafeAreaView style={{marginTop:isHorizontal? scale(10):0}}>
       <ResponsiveText
-        title={title}
+        title={isHorizontal ? title : ''}
         fontColor={colors.white}
         fontSize={24}
         fontWeight="700"
-        fontStyle={{marginVertical: scale(10)}}
+        fontStyle={{marginVertical:isHorizontal? scale(10):0}}
       />
       <FlatList
         data={videoUrls}
-        horizontal
+        horizontal={isHorizontal}
         keyExtractor={item => item.id.toString()}
         showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={<View style={{marginBottom:scale(150)}}/>}
         renderItem={({item, index}) => (
           <TouchableOpacity
+          activeOpacity={0.9}
             onPress={() =>
               navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
                 videoId: item.id,
                 videoUrl: item.link,
               })
             }
-            style={{marginRight: 15}}
+            style={{
+              marginRight: 15,
+              justifyContent: isHorizontal ? 'center' : 'center',
+              alignItems: isHorizontal ? 'center' : 'center',
+            }}
             key={item.id}>
             <Image
               source={{
@@ -55,9 +63,9 @@ const VideoListComponent = ({
                 }/0.jpg`,
               }}
               style={{
-                width: screenWidth * 0.6,
+                width: isHorizontal ? screenWidth * 0.6 : screenWidth * 0.9,
                 height: screenHeight * 0.25,
-                borderRadius: 10,
+                borderRadius: scale(10),
               }}
             />
             <ResponsiveText

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type Videotypes = {
+export type Videotypes = {
   id?: string;
   category?: string;
   title?: string;

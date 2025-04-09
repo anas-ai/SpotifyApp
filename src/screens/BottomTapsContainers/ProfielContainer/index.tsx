@@ -12,15 +12,15 @@ import {scale} from 'react-native-size-matters';
 import SettingIcons from 'react-native-vector-icons/Feather';
 import ProfileIcons from 'react-native-vector-icons/FontAwesome5';
 import Chevronforward from 'react-native-vector-icons/Ionicons';
-import FavoritsArtists from '../../../components/FavoritsItems/ArtistsComponent/FavoritsArtistsComponet';
+import FavoritsArtists from '../../../components/FavoritsItems/LiveComponent/FavoritsLiveComponet';
 import FavoritsSongs from '../../../components/FavoritsItems/FavoritsSongs/FavoritsSongs';
 import FavouriteVideo from '../../../components/FavoritsItems/VideoFavroits/FavouriteVideo';
 import ResponsiveText from '../../../components/ResponsiveText/ResponsiveText';
 import {PNG_IMG} from '../../../constants/ImagesName';
 import {useAuth} from '../../../hooks/useAuth';
 import {colors} from '../../../styles/color';
-import SelectPlaylist from '../../SelectAplaylistContainer';
 import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcast';
+import FavoritsLive from '../../../components/FavoritsItems/LiveComponent/FavoritsLiveComponet';
 
 const ProfileScreen = ({navigation}: any) => {
   type NavigableComponent = React.FC<{navigation: any}>;
@@ -39,13 +39,12 @@ const ProfileScreen = ({navigation}: any) => {
       // count: favoriteSongsCount?.toString(),
       component: FavoritsSongs,
     },
-    // {
-    //   id: 3,
-    //   icons: 'microphone',
-    //   title: 'Artists',
-    //   count: '0',
-    //   component: FavoritsArtists,
-    // },
+    {
+      id: 3,
+      icons: 'globe',
+      title: 'Live',
+      component: FavoritsLive,
+    },
 
     // {
     //   id: 5,
@@ -176,7 +175,6 @@ const ProfileScreen = ({navigation}: any) => {
                         gap: scale(10),
                       }}>
                       <ResponsiveText
-                        title={item.count}
                         fontColor={colors.white}
                         fontSize={14}
                       />

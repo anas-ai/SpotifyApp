@@ -28,6 +28,7 @@ import SingUpEmailScreen from '../screens/SingUpWithEmailContainer';
 import MusicCetegoryScreen from '../screens/VideoCetegoryContainer';
 import VIDEO_SCREEN from '../screens/VideoContainer';
 import VideoDetailsScreen from '../screens/VideoDetailsContainer';
+import FavVideoDetilsScreen from '../screens/VideoFavDetailsContainer';
 
 export const AuthStack = [
   {name: ScreenName.SIGNUP_OR_LOGIN, Component: SingUpScreen},
@@ -62,4 +63,5 @@ export const AuthStack = [
   {name: ScreenName.PODCAST_DETAILS_SCREEN, Component: PodcastDetailsScreen},
   {name: ScreenName.FAV_PODCAST_SCREEN, Component: PodcastFavScrreen},
   {name: ScreenName.LIVE_DETAILS_SCREEN, Component: LiveDetailsScreen},
+  {name: ScreenName.VIDEO_FAV_DETAILS_SCREEN, Component: FavVideoDetilsScreen},
 ];

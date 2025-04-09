@@ -22,13 +22,20 @@ interface PodcastItem {
 interface PodcastListProps {
   podcastitem: PodcastItem[]; // ✅ Expect an array of podcasts
   navigation: any;
+  isHorizontal?: boolean; // 👈 optional prop
+  title?: string;
+  subTitle?: string;
 }
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+
 const PodcastListComponent: React.FC<PodcastListProps> = ({
   podcastitem,
   navigation,
+  isHorizontal,
+  title,
+  subTitle,
 }: any) => {
   const getYouTubeThumbnail = (url: string) => {
     const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
@@ -38,13 +45,13 @@ const PodcastListComponent: React.FC<PodcastListProps> = ({
   return (
     <View>
       <ResponsiveText
-        title="Most Heard In India"
+        title={title}
         fontSize={14}
-        fontColor={colors.gray}
+        fontColor={colors.white} // ✅ Changed from gray to white
         fontWeight="600"
-        fontStyle={{marginTop: scale(30)}}
+        fontStyle={{marginTop: isHorizontal ? scale(20) : 0}}
       />
-
+      {/* "Most Heard In India" */}
       <View
         style={{
           flexDirection: 'row',
@@ -53,13 +60,13 @@ const PodcastListComponent: React.FC<PodcastListProps> = ({
           paddingBottom: scale(10),
         }}>
         <ResponsiveText
-          title={'Trending Podcasts'}
+          title={subTitle}
           fontColor={colors.white}
-          fontSize={20}
+          fontSize={24}
           fontWeight="bold"
         />
-
-        <TouchableOpacity
+        {/* 'Trending Podcasts' */}
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           style={{flexDirection: 'row', alignItems: 'center', gap: scale(10)}}>
           <ResponsiveText
@@ -68,41 +75,42 @@ const PodcastListComponent: React.FC<PodcastListProps> = ({
             fontSize={14}
           />
           <IconLeft name="right" size={14} style={{color: colors.gray}} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <FlatList
         data={podcastitem}
         keyExtractor={item => item.id.toString()}
+        horizontal={isHorizontal}
+        showsHorizontalScrollIndicator={!isHorizontal}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={() => (
-          <View
-            style={{
-              marginBottom: '50%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <ResponsiveText title={'No more items'} fontColor={colors.white} />
-          </View>
-        )}
+        contentContainerStyle={{
+          paddingBottom: scale(20),
+        }}
+        ListEmptyComponent={<View />}
         renderItem={({item, index}) => (
           <TouchableOpacity
             activeOpacity={0.8}
-            style={{marginTop: scale(20)}}
+            style={{
+              marginBottom: isHorizontal ? 0 : scale(15),
+              marginRight: isHorizontal ? scale(15) : 0,
+              width: isHorizontal ? screenWidth * 0.6 : '100%',
+              marginLeft: index === 0 ? 0 : scale(0),
+            }}
             onPress={() =>
               navigation.navigate(ScreenName.PODCAST_DETAILS_SCREEN, {
                 podcast: item,
-                allPodcast:podcastitem
-
+                allPodcast: podcastitem,
               })
             }>
             <View>
               <Image
                 source={{uri: getYouTubeThumbnail(item.link)}}
                 style={{
-                  height: screenHeight * 0.32,
+                  height: screenHeight * 0.25,
                   width: '100%',
-                  resizeMode: 'contain',
+                  resizeMode: 'cover',
+                  borderRadius: scale(10),
                 }}
               />
               <View style={{marginTop: scale(10)}}>
@@ -116,7 +124,7 @@ const PodcastListComponent: React.FC<PodcastListProps> = ({
                   fontStyle={{
                     flex: 1,
                     textAlign: 'center',
-                    lineHeight: scale(22),
+                    lineHeight: scale(20),
                   }}
                   fontSize={14}
                 />

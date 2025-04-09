@@ -7,8 +7,13 @@ import {podcastitem} from '../Home';
 const PodcastScreen = ({navigation}: any) => {
   return (
     <View style={globalStyles.globalContainer}>
-      <CustomBackButton navigation={navigation} title='Podcast'/>
-      <PodcastListComponent podcastitem={podcastitem} navigation={navigation}/>
+      <CustomBackButton navigation={navigation} title="Podcast" />
+      <PodcastListComponent
+        podcastitem={podcastitem}
+        navigation={navigation}
+        title="Your Podcast Title"
+        subTitle="Trending Podcasts"
+      />
     </View>
   );
 };

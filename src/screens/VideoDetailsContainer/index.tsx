@@ -31,6 +31,7 @@ import { useToast } from 'react-native-toast-notifications';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
+const {width, height} = Dimensions.get('window');
 
 const VideoDetailsScreen = ({ navigation }: any) => {
   const route = useRoute();
@@ -298,7 +299,6 @@ const VideoDetailsScreen = ({ navigation }: any) => {
       style={{
         flex: 1,
         backgroundColor: colors.bgBlack,
-        paddingHorizontal: scale(4),
       }}>
       
 
@@ -307,8 +307,7 @@ const VideoDetailsScreen = ({ navigation }: any) => {
           <YouTubeIframe
             ref={youtubePlayerRef}
             videoId={videoId}
-            height={isFullscreen ? Dimensions.get('window').height : '100%'}
-            width={isFullscreen ? Dimensions.get('window').width * 1.08 : '100%'}
+            height={isFullscreen ? height : moderateScale(230)}
             play={playing}
             onReady={() => console.log('Video is ready')}
             onProgress={({ currentTime }) => setCurrentTime(currentTime)}
