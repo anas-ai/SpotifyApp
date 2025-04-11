@@ -6,6 +6,7 @@ import {colors} from './src/styles/color';
 import {useAuth} from './src/hooks/useAuth';
 import {globalStyles} from './src/styles/globalStyles';
 import TrackPlayer from 'react-native-track-player';
+import LottieLoader from './src/components/AnimationsComponent/LottieLoader';
 
 const App = () => {
   const {isLoading} = useAuth();
@@ -33,13 +34,14 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <View
-        style={[
-          globalStyles.globalContainer,
-          {alignItems: 'center', justifyContent: 'center'},
-        ]}>
-        <ActivityIndicator size="large" color={colors.ButtonColor} />
-      </View>
+      // <View
+      //   style={[
+      //     globalStyles.globalContainer,
+      //     {alignItems: 'center', justifyContent: 'center'},
+      //   ]}>
+      //   <ActivityIndicator size="large" color={colors.ButtonColor} />
+      // </View>
+      <LottieLoader/>
     );
   }
 

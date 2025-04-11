@@ -3,6 +3,7 @@ import {
   Animated,
   FlatList,
   Image,
+  Modal,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -21,8 +22,13 @@ import {useAuth} from '../../../hooks/useAuth';
 import {colors} from '../../../styles/color';
 import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/FavroritsPodcast';
 import FavoritsLive from '../../../components/FavoritsItems/LiveComponent/FavoritsLiveComponet';
+import {Divider} from '@rneui/themed';
+import {ScreenName} from '../../../constants/ScreensNames';
 
 const ProfileScreen = ({navigation}: any) => {
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
   type NavigableComponent = React.FC<{navigation: any}>;
 
   const [selectedComponent, setSelectedComponent] =
@@ -99,7 +105,9 @@ const ProfileScreen = ({navigation}: any) => {
             fontSize={22}
           />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.8}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setSettingsModalVisible(true)}>
           <SettingIcons name="settings" color={colors.white} size={25} />
         </TouchableOpacity>
       </View>
@@ -118,7 +126,11 @@ const ProfileScreen = ({navigation}: any) => {
                   fontSize={16}
                 />
               </View>
-              <TouchableOpacity activeOpacity={0.8}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() =>
+                  navigation.navigate(ScreenName.EDIT_PROFILE_SCREEN)
+                }>
                 <ResponsiveText
                   title="Edit"
                   fontColor={colors.ButtonColor}
@@ -129,6 +141,13 @@ const ProfileScreen = ({navigation}: any) => {
             </View>
 
             {/* ✅ Profile Items List */}
+            <ResponsiveText
+              title="My Favorites"
+              fontColor={colors.white}
+              fontWeight="500"
+              fontSize={20}
+              fontStyle={{alignSelf: 'center'}}
+            />
             <FlatList
               data={ProfileItems}
               keyExtractor={item => item.id.toString()}
@@ -149,6 +168,7 @@ const ProfileScreen = ({navigation}: any) => {
                       justifyContent: 'space-between',
                     }}>
                     {/* Left Section: Icon + Title */}
+
                     <View
                       style={{
                         flexDirection: 'row',
@@ -174,10 +194,7 @@ const ProfileScreen = ({navigation}: any) => {
                         alignItems: 'center',
                         gap: scale(10),
                       }}>
-                      <ResponsiveText
-                        fontColor={colors.white}
-                        fontSize={14}
-                      />
+                      <ResponsiveText fontColor={colors.white} fontSize={14} />
                       <Chevronforward
                         name="chevron-forward"
                         color={colors.white}
@@ -193,6 +210,90 @@ const ProfileScreen = ({navigation}: any) => {
           React.createElement(selectedComponent, {navigation})
         )}
       </Animated.View>
+
+      <Modal
+        visible={settingsModalVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setSettingsModalVisible(false)}>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            backgroundColor: colors.bgBlack1,
+            padding: scale(16),
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: scale(20),
+            }}>
+            <ResponsiveText
+              title="Settings"
+              fontColor={colors.white}
+              fontWeight="500"
+              fontSize={22}
+            />
+            <TouchableOpacity onPress={() => setSettingsModalVisible(false)}>
+              <SettingIcons name="x" size={25} color={colors.white} />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: scale(26),
+            }}>
+            <View>
+              <ResponsiveText
+                title="Anas Rizvi"
+                fontColor={colors.white}
+                fontWeight="500"
+                fontSize={18}
+              />
+              <ResponsiveText
+                title="anasrizvi4206@gmail.com"
+                fontColor={colors.gray}
+                fontWeight="400"
+                fontSize={12}
+              />
+            </View>
+
+            <Image
+              source={PNG_IMG.VIRAT_PNG}
+              style={{
+                height: scale(80),
+                width: scale(80),
+                borderRadius: scale(50),
+              }}
+            />
+          </View>
+
+          {/* <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => navigation.navigate(ScreenName.EDIT_PROFILE_SCREEN)}>
+            <ResponsiveText
+              title="Edit Profile"
+              fontColor={colors.white}
+              fontWeight="500"
+              fontSize={16}
+              fontStyle={{marginTop: scale(20)}}
+            />
+          </TouchableOpacity> */}
+          <TouchableOpacity activeOpacity={0.9}>
+            <ResponsiveText
+              title="Log Out"
+              fontColor={colors.ButtonColor}
+              fontWeight="500"
+              fontSize={16}
+              fontStyle={{marginTop: scale(18)}}
+            />
+          </TouchableOpacity>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -201,7 +302,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bgBlack1,
-    paddingTop: scale(40),
+    paddingTop: scale(30),
   },
   headerStyle: {
     flexDirection: 'row',
@@ -237,6 +338,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: scale(10),
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: colors.bgBlack1, // or any full-screen background
+    padding: scale(16),
+  },
+
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: scale(20),
+  },
+
+  modalBody: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -190,7 +190,7 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
         />
 
         {/* Search Bar */}
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={styles.searchBarStyle}>
             <Icon name="search" size={24} color={colors.white} />
             <TextInput
@@ -206,7 +206,7 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
               keyboardType="twitter"
             />
           </View>
-        </View>
+        </View> */}
 
         {/* Artist Image */}
         <View style={styles.ArtisImageContainer}>
@@ -253,14 +253,14 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
               borderRadius: scale(20),
             }}
           />
-          <Pressable onPress={handleActionSheetOpen}>
+          {/* <Pressable onPress={handleActionSheetOpen}>
             <IconPlus
               name="pluscircleo"
               size={scale(22)}
               color={colors.gray}
               style={{width: scale(30)}}
             />
-          </Pressable>
+          </Pressable> */}
 
           <ActionSheet
             containerStyle={styles.ActionSheetContianer}
@@ -444,7 +444,7 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
                   }}
                 />
               )}
-              <TouchableOpacity activeOpacity={0.7}>
+              {/* <TouchableOpacity activeOpacity={0.7}>
                 <Image
                   source={PNG_IMG.THREE_DOTS_PNG}
                   style={{
@@ -453,7 +453,7 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
                     tintColor: colors.gray,
                   }}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </TouchableOpacity>
         )}

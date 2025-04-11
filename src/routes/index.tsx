@@ -1,6 +1,7 @@
 import { ScreenName } from '../constants/ScreensNames';
 import TabNavigator from '../Navigators/TabNavigator/TabNavigator';
 import AuthScreen from '../screens/AuthContainer';
+import EditProfileScreen from '../screens/BottomTapsContainers/EditProfileScreen';
 import PostScreen from '../screens/BottomTapsContainers/PostContainer';
 import SearchScreenTab from '../screens/BottomTapsContainers/SearchContainer';
 import SearchScreenMain from '../screens/BottomTapsContainers/SearchContainer/SearchSreen';
@@ -14,6 +15,7 @@ import CreatePassword from '../screens/CreatePasswordContainer';
 import DateOfBirthScreen from '../screens/DateOfBirthContainer';
 import GenderScreen from '../screens/GenderContaienr';
 import LiveDetailsScreen from '../screens/LiveDetailsScreen';
+import LiveFavDetailsScreen from '../screens/LiveFavDetailsScreenContainer';
 import LiveScreen from '../screens/LiveScreenContainer';
 import LoginScreen from '../screens/LoginConainer';
 import LogWithoutPassword from '../screens/LoginWithoutPasswordContainer';
@@ -63,5 +65,7 @@ export const AuthStack = [
   {name: ScreenName.PODCAST_DETAILS_SCREEN, Component: PodcastDetailsScreen},
   {name: ScreenName.FAV_PODCAST_SCREEN, Component: PodcastFavScrreen},
   {name: ScreenName.LIVE_DETAILS_SCREEN, Component: LiveDetailsScreen},
+  {name: ScreenName.LIVE_FAV_DETAILS_SCREEN, Component: LiveFavDetailsScreen},
   {name: ScreenName.VIDEO_FAV_DETAILS_SCREEN, Component: FavVideoDetilsScreen},
+  {name: ScreenName.EDIT_PROFILE_SCREEN, Component: EditProfileScreen},
 ];

@@ -11,7 +11,7 @@ const PodcastScreen = ({navigation}: any) => {
       <PodcastListComponent
         podcastitem={podcastitem}
         navigation={navigation}
-        title="Your Podcast Title"
+        title=""
         subTitle="Trending Podcasts"
       />
     </View>
