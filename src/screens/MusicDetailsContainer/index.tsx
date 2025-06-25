@@ -76,23 +76,29 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
   // Load and play the selected song whenever it changes
   useEffect(() => {
     const loadSong = async () => {
-      await TrackPlayer.reset(); // Clear the current track
-      await TrackPlayer.add({
-        id: currentSong.id,
-        url: currentSong.url, // Ensure `currentSong.url` is valid
-        title: currentSong.title,
-        artist: currentSong.artist,
-        artwork: currentSong.artwork,
-      });
-      await TrackPlayer.play(); // Start playing
-      setPlaying(true);
+      try {
+        if (!currentSong) return;
+  
+        await TrackPlayer.reset(); // clear previous
+        await TrackPlayer.add([
+          {
+            id: currentSong.id.toString(), // Ensure id is a string
+            url: currentSong.url,
+            title: currentSong.title,
+            artist: currentSong.artist,
+            artwork: currentSong.artwork,
+          },
+        ]);
+        await TrackPlayer.play();
+        setPlaying(true);
+      } catch (error) {
+        console.log('Error loading song:', error.message);
+      }
     };
-
-    if (currentSong) {
-      loadSong();
-    }
+  
+    loadSong();
   }, [currentSong]);
-
+  
   // Format time (minutes:seconds)
   const formatTime = time => {
     if (time < 0) return '0:00';
@@ -106,16 +112,16 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
   // Fetch song progress
   const fetchProgress = useCallback(async () => {
     try {
-      const {duration, position} = await TrackPlayer.getProgress();
+      const progress = await TrackPlayer.getProgress();
       if (!isSliding) {
-        setPosition(position);
-        setDuration(duration || 1);
+        setPosition(progress.position);
+        setDuration(progress.duration || 1);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.log('Error fetching track progress', error.message);
     }
   }, [isSliding]);
-
+  
   // Update progress every second
   useEffect(() => {
     const interval = setInterval(fetchProgress, 1000);
@@ -156,11 +162,11 @@ const MusicDetailsScreen = ({navigation, route}: any) => {
         ],
         compactCapabilities: [Capability.Play, Capability.Pause],
       });
-      await TrackPlayer.add(songsList);
-    } catch (error) {
+    } catch (error:any) {
       console.log('Error setting up TrackPlayer:', error.message);
     }
   };
+  
 
   const RestSongs =
     songsList?.filter(item => item?.id !== selectedSong?.id) || [];

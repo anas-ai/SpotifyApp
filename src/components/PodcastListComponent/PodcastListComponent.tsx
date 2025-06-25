@@ -3,15 +3,13 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import {scale} from 'react-native-size-matters';
-import IconLeft from 'react-native-vector-icons/AntDesign';
-import {colors} from '../../styles/color';
+import { scale } from 'react-native-size-matters';
+import { ScreenName } from '../../constants/ScreensNames';
+import { colors } from '../../styles/color';
 import ResponsiveText from '../ResponsiveText/ResponsiveText';
-import {ScreenName} from '../../constants/ScreensNames';
 
 interface PodcastItem {
   id: number;

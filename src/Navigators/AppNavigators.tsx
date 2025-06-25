@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 const AppNavigators = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={ScreenName.HOME_SCREEN_IN_AUTH}>
+      <Stack.Navigator initialRouteName={ScreenName.SIGNUP_OR_LOGIN}>
         {AuthStack.map((item, index) => (
           <Stack.Screen
             key={index}
@@ -23,10 +23,10 @@ const AppNavigators = () => {
             }}
           />
         ))}
-        {/* MainTabs screen will be used for the TabNavigator */}
+        
         <Stack.Screen
           name="MainTabs"
-          component={TabNavigator} // This should navigate to the tab navigator with the unique home screen name
+          component={TabNavigator} 
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

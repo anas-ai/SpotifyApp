@@ -1,6 +1,6 @@
 import Slider from '@react-native-community/slider';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
+import {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -13,46 +13,59 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
-import { default as Stepbackward, default as StepForward } from 'react-native-vector-icons/AntDesign';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import {
+  default as Stepbackward,
+  default as StepForward,
+} from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import YouTubeIframe, { YoutubeIframeRef } from 'react-native-youtube-iframe';
+import YouTubeIframe, {YoutubeIframeRef} from 'react-native-youtube-iframe';
 import ResponsiveText from '../../components/ResponsiveText/ResponsiveText';
-import { ScreenName } from '../../constants/ScreensNames';
-import { colors } from '../../styles/color';
-import { videoUrls } from '../Home';
+import {ScreenName} from '../../constants/ScreensNames';
+import {colors} from '../../styles/color';
+import {videoUrls} from '../Home';
 import Orientation from 'react-native-orientation-locker';
 import FullScreen from 'react-native-vector-icons/MaterialCommunityIcons';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import { default as HeartIcon } from 'react-native-vector-icons/AntDesign';
-import { AuthContext } from '../../Contexts/Context';
+import {default as HeartIcon} from 'react-native-vector-icons/AntDesign';
+import {AuthContext} from '../../Contexts/Context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useToast } from 'react-native-toast-notifications';
+import {useToast} from 'react-native-toast-notifications';
+import {styles} from './style';
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
-const SCREEN_WIDTH = Dimensions.get('screen').width;
 const {width, height} = Dimensions.get('window');
 
-const VideoDetailsScreen = ({ navigation }: any) => {
+const VideoDetailsScreen = ({navigation}: any) => {
   const route = useRoute();
-  const { videoUrl } = route.params;
+  const {videoUrl, videoItem, videoTitle} = route.params;
   const [playing, setPlaying] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [progress, setProgrees] = useState(0);
-  const [totalDuration, setTotalDuration] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [isfullScreen, setIsfullScreen] = useState(false);
   const [isFavorites, setIsFavorites] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('success');
   const [refreshKey, setRefreshKey] = useState(0);
-  const [alertVisible, setAlertVisible] = useState(false);
 
-  const { state, dispatch } = useContext(AuthContext);
+  const {state, dispatch} = useContext(AuthContext);
+  const Toast = useToast();
+  const youtubePlayerRef = useRef<YoutubeIframeRef>(null);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const Toast = useToast()
+  const videoId = videoUrl.includes('youtube.com/embed/')
+    ? videoUrl.split('/embed/')[1].split('?')[0]
+    : videoUrl.split('/')[4];
+
+  const currentVideo = {
+    id: videoId,
+    category: 'video',
+    title: videoItem?.title || videoTitle || 'Video Title',
+    artwork: `https://img.youtube.com/vi/${videoId}/0.jpg`,
+    url: videoUrl,
+  };
+
+  const RestVide = videoUrls.filter(item => item.id !== videoId);
 
   useFocusEffect(
     useCallback(() => {
@@ -60,8 +73,12 @@ const VideoDetailsScreen = ({ navigation }: any) => {
         Orientation.lockToPortrait();
         StatusBar.setHidden(false);
       };
-    }, [])
+    }, []),
   );
+
+  useEffect(() => {
+    console.log('Route Params:', {videoUrl, videoItem, videoTitle});
+  }, [videoUrl, videoItem, videoTitle]);
 
   useEffect(() => {
     if (isFullscreen) {
@@ -85,11 +102,19 @@ const VideoDetailsScreen = ({ navigation }: any) => {
   }, [showControls]);
 
   useEffect(() => {
-    if (youtubePlayerRef.current) {
-      youtubePlayerRef.current.getDuration().then(duration => {
-        setTotalDuration(duration);
-      });
-    }
+    const interval = setInterval(async () => {
+      if (youtubePlayerRef.current) {
+        const currentTime = await youtubePlayerRef.current.getCurrentTime();
+        const duration = await youtubePlayerRef.current.getDuration();
+        setCurrentTime(currentTime);
+        setDuration(duration);
+        if (duration > 0) {
+          setProgress(currentTime / duration);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleScreenTap = () => {
@@ -110,49 +135,7 @@ const VideoDetailsScreen = ({ navigation }: any) => {
     setShowControls(true);
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (youtubePlayerRef.current) {
-        youtubePlayerRef.current.getCurrentTime().then(time => {
-          setCurrentTime(time);
-          setProgrees(totalDuration ? time / totalDuration : 0);
-        });
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [totalDuration]);
-
-  const youtubePlayerRef = useRef<YoutubeIframeRef>(null);
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-
-  const videoId = videoUrl.includes('youtube.com/embed/')
-    ? videoUrl.split('/embed/')[1].split('?')[0]
-    : videoUrl.split('/')[4];
-
-  // Define currentVideo object for favorites purposes
-  const currentVideo = {
-    id: videoId,
-    category: 'video',
-    title: route.params.title || 'Video Title',
-    artwork: `https://img.youtube.com/vi/${videoId}/0.jpg`,
-    url: videoUrl,
-  };
-
-  const CategoryVideo = videoUrls.filter(
-    (item: { link: string }) =>
-      item?.link.includes('youtube.com/embed/') &&
-      item?.link.split('/embed/')[1].split('?')[0] !== videoId
-  );
-
   const skipForward = useCallback(async () => {
-    animationButton();
-    if (youtubePlayerRef.current) {
-      const currentTime = await youtubePlayerRef.current.getCurrentTime();
-      youtubePlayerRef.current.seekTo(currentTime + 10, true);
-    }
-  }, []);
-
-  const animationButton = () => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.2,
@@ -165,23 +148,25 @@ const VideoDetailsScreen = ({ navigation }: any) => {
         useNativeDriver: true,
       }),
     ]).start();
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      youtubePlayerRef.current?.getCurrentTime().then(currentTime => {
-        youtubePlayerRef.current?.getDuration().then(duration => {
-          if (duration > 0) {
-            setProgrees(currentTime / duration);
-          }
-        });
-      });
-    }, 1000);
-    return () => clearInterval(interval);
+    if (youtubePlayerRef.current) {
+      const currentTime = await youtubePlayerRef.current.getCurrentTime();
+      youtubePlayerRef.current.seekTo(currentTime + 10, true);
+    }
   }, []);
 
   const skipRewind = useCallback(async () => {
-    animationButton();
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.2,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
     if (youtubePlayerRef.current) {
       const currentTime = await youtubePlayerRef.current.getCurrentTime();
       youtubePlayerRef.current.seekTo(Math.max(0, currentTime - 10), true);
@@ -193,89 +178,99 @@ const VideoDetailsScreen = ({ navigation }: any) => {
   }, []);
 
   const handleNextVideo = useCallback(() => {
-    if (currentIndex < CategoryVideo.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-      setPlaying(false);
-      navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
-        videoUrl: CategoryVideo[currentIndex + 1]?.link,
-      });
-    }
-  }, [currentIndex, CategoryVideo, navigation]);
+    const nextIndex = (currentIndex + 1) % RestVide.length;
+    setCurrentIndex(nextIndex);
+    setPlaying(false);
+    navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
+      videoUrl: RestVide[nextIndex]?.link,
+      videoItem: RestVide[nextIndex],
+      videoTitle: RestVide[nextIndex]?.title,
+    });
+  }, [currentIndex, RestVide, navigation]);
 
   const handlePreviousVideo = useCallback(() => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
-      setPlaying(false);
-      navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
-        videoUrl: CategoryVideo[currentIndex - 1]?.link,
-      });
-    }
-  }, [currentIndex, CategoryVideo, navigation]);
+    const prevIndex = (currentIndex - 1 + RestVide.length) % RestVide.length;
+    setCurrentIndex(prevIndex);
+    setPlaying(false);
+    navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
+      videoUrl: RestVide[prevIndex]?.link,
+      videoItem: RestVide[prevIndex],
+      videoTitle: RestVide[prevIndex]?.title,
+    });
+  }, [currentIndex, RestVide, navigation]);
 
-  const onStateChange = useCallback(state => {
-    if (state === 'playing') {
-      setPlaying(true);
-    } else if (state === 'paused' || state === 'ended') {
-      setPlaying(false);
-    }
+  const onStateChange = useCallback(
+    state => {
+      if (state === 'playing') setPlaying(true);
+      if (state === 'paused') setPlaying(false);
+      if (state === 'ended') handleNextVideo();
+    },
+    [handleNextVideo],
+  );
+
+  const formatTime = (duration: number, currentTime: number): string => {
+    if (!duration || isNaN(duration) || !currentTime || isNaN(currentTime))
+      return '0:00';
+    const totalMinutes = Math.floor(duration / 60);
+    const totalSeconds = Math.floor(duration % 60);
+    const currentMinutes = Math.floor(currentTime / 60);
+    const currentSeconds = Math.floor(currentTime % 60);
+    return `${currentMinutes}:${
+      currentSeconds < 10 ? '0' : ''
+    }${currentSeconds} / ${totalMinutes}:${
+      totalSeconds < 10 ? '0' : ''
+    }${totalSeconds}`;
+  };
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const storedFavorites = await AsyncStorage.getItem('video');
+        if (storedFavorites) {
+          dispatch({
+            type: 'ADD_TO_FAVORITES_VIDEOS',
+            payload: JSON.parse(storedFavorites),
+          });
+        }
+      } catch (error) {
+        console.error('Error loading favorites:', error);
+      }
+    };
+    loadFavorites();
   }, []);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
- // Load favorites from AsyncStorage when component mounts
- useEffect(() => {
-  const loadFavorites = async () => {
-    try {
-      const storedFavorites = await AsyncStorage.getItem("video");
-      if (storedFavorites) {
-        dispatch({ type: "ADD_TO_FAVORITES_VIDEOS", payload: JSON.parse(storedFavorites) });
-      }
-    } catch (error) {
-      console.error("Error loading favorites:", error);
-    }
-  };
-  loadFavorites();
-}, []);
-
-
-  // Check if the current video is already in favorites
   useEffect(() => {
-    const checkFavoriteStatus = () => {
-      const isFav = state?.favoritesVideos?.favoritesVideo.some(
-        video => video.id === currentVideo?.id
-      );
-      setIsFavorites(isFav);
-    };
-    checkFavoriteStatus();
-  }, [state?.favoritesVideos?.favoritesVideo, currentVideo]); // FIX: Correct dependency
-  
+    const isFav = state?.favoritesVideos?.favoritesVideo.some(
+      video => video.id === currentVideo?.id,
+    );
+    setIsFavorites(isFav);
+  }, [state?.favoritesVideos?.favoritesVideo, currentVideo?.id]);
 
-  // Toggle adding or removing the current video from favorites
   const toggleFavoriteVideo = async () => {
     if (!currentVideo) return;
-  
     let updatedFavorites = [];
-  
     if (isFavorites) {
       updatedFavorites = state?.favoritesVideos?.favoritesVideo.filter(
-        video => video.id !== currentVideo.id
+        video => video.id !== currentVideo.id,
       );
       setIsFavorites(false);
-      dispatch({ type: 'REMOVE_FROM_FAVORITES_VIDEOS', payload: currentVideo.id }); // FIX: Pass only ID
+      dispatch({
+        type: 'REMOVE_FROM_FAVORITES_VIDEOS',
+        payload: currentVideo.id,
+      });
       Toast.show('Video removed from favorites', {
-        type: 'danger', // FIX: Corrected "denger" to "danger"
+        type: 'danger',
         placement: 'bottom',
         duration: 4000,
         animationType: 'slide-in',
       });
     } else {
-      updatedFavorites = [...state?.favoritesVideos?.favoritesVideo, currentVideo];
+      updatedFavorites = [
+        ...state?.favoritesVideos?.favoritesVideo,
+        currentVideo,
+      ];
       setIsFavorites(true);
-      dispatch({ type: 'ADD_TO_FAVORITES_VIDEOS', payload: currentVideo }); // FIX: Correct action type
+      dispatch({type: 'ADD_TO_FAVORITES_VIDEOS', payload: currentVideo});
       Toast.show('Video added to favorites', {
         type: 'success',
         placement: 'bottom',
@@ -283,16 +278,16 @@ const VideoDetailsScreen = ({ navigation }: any) => {
         animationType: 'slide-in',
       });
     }
-  
     await AsyncStorage.setItem('video', JSON.stringify(updatedFavorites));
-    setAlertVisible(true);
     setRefreshKey(prevKey => prevKey + 1);
   };
-  
 
-  useEffect(() => {
-    console.log('Updated Favorites:', state?.favoritesVideos?.favoritesVideo);
-  }, [state?.favoritesVideos]);
+  const onReady = async () => {
+    if (youtubePlayerRef.current) {
+      const dur = await youtubePlayerRef.current.getDuration();
+      setDuration(dur);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -300,8 +295,6 @@ const VideoDetailsScreen = ({ navigation }: any) => {
         flex: 1,
         backgroundColor: colors.bgBlack,
       }}>
-      
-
       <View style={[styles.YouTubeIframeStyleContainer]}>
         <View style={[styles.videoWrapper]}>
           <YouTubeIframe
@@ -309,9 +302,7 @@ const VideoDetailsScreen = ({ navigation }: any) => {
             videoId={videoId}
             height={isFullscreen ? height : moderateScale(230)}
             play={playing}
-            onReady={() => console.log('Video is ready')}
-            onProgress={({ currentTime }) => setCurrentTime(currentTime)}
-            onError={e => console.log('Error:', e)}
+            onReady={onReady}
             onChangeState={onStateChange}
             initialPlayerParams={{
               controls: false,
@@ -384,28 +375,53 @@ const VideoDetailsScreen = ({ navigation }: any) => {
           />
         </View>
       </View>
-
-      <View style={styles.formatTime}>
-        <Text style={{ color: colors.white, fontSize: scale(10) }}>
-          {formatTime(currentTime)} / {formatTime(totalDuration - currentTime)}
-        </Text>
-        <TouchableOpacity onPress={toggleFavoriteVideo} style={{position:'absolute'}}>
+      {!isFullscreen && (
+        <ResponsiveText
+          title={videoItem?.title || videoTitle || 'Video Title'}
+          fontColor={colors.white}
+          fontSize={14}
+          fontStyle={{
+            textAlign: 'center',
+            paddingVertical: scale(10),
+            fontWeight: '500',
+          }}
+        />
+      )}
+      <View style={[styles.formatTime]}>
+        <ResponsiveText
+          title={formatTime(duration, currentTime)}
+          fontColor={colors.white}
+          fontSize={12}
+          fontStyle={{
+            alignSelf: 'center',
+            backgroundColor: isFullscreen
+              ? 'rgba(0, 0, 0, 0.7)'
+              : 'rgba(0, 0, 0, 0.5)',
+            paddingHorizontal: scale(12),
+            paddingVertical: scale(8),
+            borderRadius: scale(6),
+          }}
+        />
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={toggleFavoriteVideo}
+          style={{position: 'absolute'}}>
           <HeartIcon
             name={isFavorites ? 'heart' : 'hearto'}
             size={scale(20)}
             color={isFavorites ? 'red' : colors.white}
-            style={{ width: scale(30) ,bottom:scale(30),left:scale(10)}}
+            style={{width: scale(30), bottom: scale(30), left: scale(14)}}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={toggleFullscreen} activeOpacity={0.8}>
+        <TouchableOpacity onPress={toggleFullscreen} activeOpacity={0.9}>
           <FullScreen
-            name={isfullScreen ? 'fullscreen-exit' : 'fullscreen'}
+            name={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
             size={28}
             color={colors.white}
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={handleScreenTap}>
+      <TouchableOpacity onPress={handleScreenTap} activeOpacity={0.9}>
         <View
           style={{
             alignItems: 'center',
@@ -417,11 +433,17 @@ const VideoDetailsScreen = ({ navigation }: any) => {
             minimumValue={0}
             maximumValue={1}
             value={progress}
-            onValueChange={setProgrees}
-            onSlidingStart={() => setPlaying(false)}
-            onSlidingComplete={value => {
-              youtubePlayerRef.current?.seekTo(value * totalDuration, true);
-              setPlaying(true);
+            onValueChange={value => {
+              setProgress(value);
+              setPlaying(false);
+            }}
+            onSlidingComplete={async value => {
+              if (youtubePlayerRef.current) {
+                const seekTime = value * duration;
+                await youtubePlayerRef.current.seekTo(seekTime, true);
+                setCurrentTime(seekTime);
+                setPlaying(true);
+              }
             }}
             minimumTrackTintColor={colors.ButtonColor}
             maximumTrackTintColor={colors.gray}
@@ -429,35 +451,59 @@ const VideoDetailsScreen = ({ navigation }: any) => {
           />
         </View>
       </TouchableOpacity>
-
-      <View style={styles.controls}>
-        <TouchableOpacity onPress={handlePreviousVideo}>
+      <View
+        style={[
+          styles.controls,
+          isFullscreen && {
+            position: 'absolute',
+            bottom: scale(0),
+            left: 0,
+            right: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            paddingVertical: scale(12),
+            paddingHorizontal: scale(20),
+            zIndex: 1000,
+          },
+        ]}>
+        <TouchableOpacity onPress={handlePreviousVideo} activeOpacity={0.9}>
           <Stepbackward
             name="stepbackward"
             size={moderateScale(24)}
             color={colors.white}
           />
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={skipRewind}>
-          <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-            <Icon name="replay-10" size={moderateScale(30)} color={colors.white} />
+        <TouchableOpacity onPress={skipRewind} activeOpacity={0.9}>
+          <Animated.View style={{transform: [{scale: scaleAnim}]}}>
+            <Icon
+              name="replay-10"
+              size={moderateScale(30)}
+              color={colors.white}
+            />
           </Animated.View>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={handlePlayorPause}>
-          <Icon name={playing ? 'pause' : 'play-arrow'} size={moderateScale(30)} color="white" />
+        <TouchableOpacity onPress={handlePlayorPause} activeOpacity={0.9}>
+          <Icon
+            name={playing ? 'pause' : 'play-arrow'}
+            size={moderateScale(30)}
+            color="white"
+          />
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={skipForward}>
+        <TouchableOpacity onPress={skipForward} activeOpacity={0.9}>
           <Animated.View>
-            <Icon name="forward-10" size={moderateScale(30)} color={colors.white} />
+            <Icon
+              name="forward-10"
+              size={moderateScale(30)}
+              color={colors.white}
+            />
           </Animated.View>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={handleNextVideo}>
+        <TouchableOpacity onPress={handleNextVideo} activeOpacity={0.9}>
           <Animated.View>
-            <StepForward name="stepforward" size={moderateScale(24)} color={colors.white} />
+            <StepForward
+              name="stepforward"
+              size={moderateScale(24)}
+              color={colors.white}
+            />
           </Animated.View>
         </TouchableOpacity>
       </View>
@@ -472,24 +518,26 @@ const VideoDetailsScreen = ({ navigation }: any) => {
             fontColor={colors.white}
             fontWeight="700"
             fontSize={20}
-            fontStyle={{ paddingVertical: scale(10) }}
+            fontStyle={{paddingVertical: scale(10)}}
           />
           <FlatList
-            data={CategoryVideo}
+            data={RestVide}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) =>
               item?.id ? item.id.toString() : index.toString()
             }
-            renderItem={({ item, index }) => (
+            renderItem={({item, index}) => (
               <TouchableOpacity
+                activeOpacity={0.9}
                 onPress={() =>
                   navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
-                    videoId: item.id,
                     videoUrl: item.link,
+                    videoItem: item,
+                    videoTitle: item.title,
                   })
                 }
-                style={{ marginLeft: index === 0 ? 0 : 15 }}>
+                style={{marginLeft: index === 0 ? 0 : 15}}>
                 <Image
                   source={{
                     uri: `https://img.youtube.com/vi/${
@@ -502,6 +550,20 @@ const VideoDetailsScreen = ({ navigation }: any) => {
                     borderRadius: scale(10),
                   }}
                 />
+                <ResponsiveText
+                  title={
+                    item?.title.length > 10
+                      ? item?.title.slice(0, 24) + '...'
+                      : item?.title
+                  }
+                  fontColor={colors.white}
+                  fontSize={14}
+                  fontStyle={{
+                    textAlign: 'center',
+                    paddingVertical: scale(10),
+                    fontWeight: '500',
+                  }}
+                />
               </TouchableOpacity>
             )}
           />
@@ -510,66 +572,5 @@ const VideoDetailsScreen = ({ navigation }: any) => {
     </SafeAreaView>
   );
 };
-
-export const styles = StyleSheet.create({
-  formatTime: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: scale(10),
-    paddingTop: scale(10),
-    marginTop: scale(32),
-  },
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    padding: 10,
-  },
-  title: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  progressBar: {
-    width: '100%',
-    height: 5,
-    marginVertical: 8,
-  },
-  YouTubeIframeStyleContainer: {
-    height: SCREEN_HEIGHT * 0.26,
-  },
-  fullscreenContainer: {
-    top: 0,
-    left: 0,
-    width: SCREEN_HEIGHT,
-    height: SCREEN_WIDTH,
-    backgroundColor: 'black',
-    zIndex: 9999,
-  },
-  videoWrapper: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  overlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  overlayText: {
-    color: '#fff',
-    fontSize: 20,
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-});
 
 export default VideoDetailsScreen;

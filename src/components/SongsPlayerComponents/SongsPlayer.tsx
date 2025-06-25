@@ -131,7 +131,7 @@ const SongsPlayer: React.FC<SongsPlayerProps> = ({
           paddingHorizontal: scale(16),
         }}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity onPress={() => onClose()}>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => onClose()}>
             <ArrowDownIcon
               name="chevron-thin-down"
               size={scale(30)}
@@ -191,7 +191,8 @@ const SongsPlayer: React.FC<SongsPlayerProps> = ({
               fontWeight="700"
             />
           </View>
-          <TouchableOpacity onPress={handleFavoritesPress}>
+          
+          <TouchableOpacity activeOpacity={0.9} onPress={handleFavoritesPress}>
             <IconPlus
               name={isFavorites ? 'heart' : 'hearto'}
               size={scale(28)}
@@ -234,7 +235,7 @@ const SongsPlayer: React.FC<SongsPlayerProps> = ({
             justifyContent: 'space-around',
             flexDirection: 'row',
           }}>
-          <TouchableOpacity onPress={onPreves}>
+          <TouchableOpacity onPress={onPreves} activeOpacity={0.9}>
             <PrveIcon
               name="controller-jump-to-start"
               size={scale(60)}
@@ -256,7 +257,7 @@ const SongsPlayer: React.FC<SongsPlayerProps> = ({
               />
             )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={onNext}>
+          <TouchableOpacity onPress={onNext} activeOpacity={0.9}>
             <NextIcon name="controller-next" size={60} color={colors.white} />
           </TouchableOpacity>
         </View>

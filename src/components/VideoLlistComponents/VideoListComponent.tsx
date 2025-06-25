@@ -46,8 +46,9 @@ const VideoListComponent = ({
           activeOpacity={0.9}
             onPress={() =>
               navigation.navigate(ScreenName.VIDEO_DETAILS_SCREEN, {
-                videoId: item.id,
+                videoItem: item,
                 videoUrl: item.link,
+                videoTitle:item?.title
               })
             }
             style={{
@@ -69,12 +70,12 @@ const VideoListComponent = ({
               }}
             />
             <ResponsiveText
-              title={`Video ${index + 1}`}
+              title={item?.title.length > 10 ? item?.title.slice(0,30)+'...':item?.title}
               fontColor={colors.gray}
-              fontSize={14}
+              fontSize={12}
               fontStyle={{
-                marginVertical: verticalScale(6),
-                textAlign: 'auto',
+                marginVertical: verticalScale(5),
+                textAlign: 'justify',
               }}
             />
           </TouchableOpacity>

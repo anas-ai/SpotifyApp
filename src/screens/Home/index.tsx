@@ -1,7 +1,8 @@
-import {useState} from 'react';
+import {useState, useCallback} from 'react';
 import {
   Dimensions,
   FlatList,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -30,30 +31,48 @@ const HomeTab = [
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-export const videoUrls: any = [
+export type videoUrlType = {
+  id: number;
+  link: string;
+  title: string;
+};
+
+export const videoUrls: videoUrlType[] = [
   {
     id: 1,
-    link: 'https://www.youtube.com/embed/25VRdPO8xJ0',
+    link: 'https://www.youtube.com/embed/tZDR7uYgjjY',
+    title:
+      'Mujtaba Aziz Naza की 2025 में बिलकुल नई दिल को छू लेने वाली Naat | Wo Noor Hai Mujassam | Viral Naat',
   },
   {
     id: 2,
-    link: 'https://www.youtube.com/embed/WQdqgrWvy6g',
+    link: 'https://www.youtube.com/embed/KXQSDwpXd18',
+    title:
+      '15th Jashne Chote Bade Sarkar 2025 || या छोटे बड़े सरकार || Junaid Sultani बदायूं उर्स 2025',
   },
   {
     id: 3,
-    link: 'https://www.youtube.com/embed/4kGVdHt0U5o',
+    link: 'https://www.youtube.com/embed/32zptW5eesU',
+    title:
+      'Mujtaba Aziz Naza की सबसे Famous Qawwali || जगत गुरु ख्वाजा मैं तोरी गली आई || Jagat Guru Khwaja',
   },
   {
     id: 4,
-    link: 'https://www.youtube.com/embed/9a4izd3Rvdw',
+    link: 'https://www.youtube.com/embed/sE13l6FA2bI',
+    title:
+      'Ghous Pak Manqabat 2025 जश्न 11वी का तेरा गौस ए आज़म | Sadakat Sabri | है ये ईद ए ग़ौसुलवरा गौस ए आज़म',
   },
   {
     id: 5,
-    link: 'https://www.youtube.com/embed/A_1V9AColh4',
+    link: 'https://www.youtube.com/embed/YMU--pn3b40',
+    title:
+      'नैनन मा समाओ प्यारे ख्वाजा जी || Mujtaba Aziz Naza || Garib Nawaz New Qawwali 2025 || Chatti Sharif',
   },
   {
     id: 6,
-    link: 'https://www.youtube.com/embed/V258-P0Zhs8',
+    link: 'https://www.youtube.com/embed/HGdrx8NzEQc',
+    title:
+      'Dongri Ke Sultan के बाद एक और World Famous Qawwali Mujtaba Aziz Naza | Khwaja Khwaja Hind Ke Sultan',
   },
 ];
 
@@ -119,43 +138,101 @@ export interface PodcastItem {
 export const podcastitem: PodcastItem[] = [
   {
     id: 1,
-    link: 'https://www.youtube.com/watch?v=CiaI2NRtC8o',
-    title: 'Podcast 1 ',
+    link: 'https://www.youtube.com/watch?v=WiTTYnITqaE',
+    title:
+      'Syed Sohail Qadri Fatmi Podcast || Promo || Cooming Soon Interview Sohail Bapu || Deewana Podcast ',
   },
   {
     id: 2,
-    link: 'https://www.youtube.com/watch?v=HxjDgR8itZM',
-    title: 'Podcast 2',
+    link: 'https://www.youtube.com/watch?v=LP9rtFWsvX0',
+    title:
+      'Junaid Sultani ने अपनी Life के बारे में खुलकर बताया || Deewana Podcast : Episode 2 || Junaid Sultani',
   },
   {
     id: 3,
-    link: 'https://www.youtube.com/watch?v=AgQ8RV3zn2A',
-    title: 'Podcast 3 ',
+    link: 'https://www.youtube.com/watch?v=QBfPx2ob9Jk',
+    title:
+      'Syed Aminul Qadri Podcast 2025 || Qawwali पर आला हज़रत का फरमान || Latest Episode || Deewana Podcast ',
   },
   {
     id: 4,
-    link: 'https://www.youtube.com/watch?v=u3gYBBO3Iro',
-    title: 'Podcast 4 ',
+    link: 'https://www.youtube.com/watch?v=Hvlfw_dJjTU',
+    title:
+      'Camere में Live दिखा जिन्न का साया || Horror Podcast 2025 || Syed Mukhtar Ashraf Qadri Interview',
   },
   {
     id: 5,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
-    title: 'Podcast 5 ',
+    link: 'https://www.youtube.com/watch?v=wunjMTsDOlE',
+    title:
+      'Syed Naimatullah Hussaini ने राफज़ीयत के फ़तवे पर किया बड़ा खुलासा || Deewana Podcast New Episode 2025',
   },
   {
     id: 6,
-    link: 'https://www.youtube.com/watch?v=YMPiKthmtRU',
-    title: 'Podcast 5 ',
+    link: 'https://www.youtube.com/watch?v=hgT-N1peXzg',
+    title:
+      'Molana Tahseen Jilani Podcast 2025 | हिन्दू मुस्लिम लेडीज Fans के लिया क्या बोल दिया Deewana Podcast',
   },
   {
     id: 7,
-    link: 'https://www.youtube.com/watch?v=NNH-RLNyzoM',
-    title: 'Podcast 5 ',
+    link: 'https://www.youtube.com/watch?v=bShE_PhDrWI',
+    title:
+      'Ashraf E Millat ने दावते इस्लामी पर किया बड़ा खुलासा | Podcast Syed Mohammad Ashraf Ashrafi Al Jilani',
+  },
+  {
+    id: 8,
+    link: 'https://www.youtube.com/watch?v=_PRYz26BE5o',
+    title:
+      'डोंगरी के सुल्तान Qawwali से पूरी दुनिया मे Famous Mujtaba Aziz Naza का Interview || Deewana Podcast',
+  },
+  {
+    id: 9,
+    link: 'https://www.youtube.com/watch?v=0DfjTjQv5uc',
+    title:
+      'Online Games में बर्बाद होते Youths || A.R. Hussain ने किया बड़ा खुलासा || A.R. Hussain Podcast',
+  },
+  {
+    id: 10,
+    link: 'https://www.youtube.com/watch?v=Y6gPJh-203g',
+    title:
+      'Hafiz Tahir Qadri के बारे मे क्या बोल दिया Syed Abdul Qadri Bapu ने || IND vs PAK || Deewana Podcast',
+  },
+  {
+    id: 11,
+    link: 'https://www.youtube.com/watch?v=FQ6auCwI8os',
+    title:
+      'Syed Mehdi Miya Interview || रजवी और चिश्ती सिलसिले पर किया बड़ा खुलासा || Deewana Podcast',
+  },
+  {
+    id: 12,
+    link: 'https://www.youtube.com/watch?v=dRnTBSm9xY4',
+    title:
+      'Deewana Podcast : Episode 1 || Allama Ahmed Naqshbandi Sahab Hyderabad || Exclusive Podcast',
   },
 ];
 
 const HomeScreen = ({navigation}: any) => {
   const [activeTab, setActiveTab] = useState('Home');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Simulate a network request or data refresh
+    setTimeout(() => {
+      setRefreshing(false);
+      console.log(`Refreshed ${activeTab} tab!`);
+      // Add your data fetching logic here, e.g., refetch videoUrls, songsList, podcastitem, or live data
+    }, 1500);
+  }, [activeTab]);
+
+  const renderRefreshControl = () => (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      tintColor={colors.ButtonColor}
+      title="Refreshing..."
+      titleColor={colors.white}
+    />
+  );
 
   return (
     <SafeAreaView
@@ -200,51 +277,90 @@ const HomeScreen = ({navigation}: any) => {
         />
       </View>
       {activeTab === 'Home' && (
-        <ScrollView
+        <FlatList
+          data={[1]}
+          keyExtractor={() => 'home-content'}
+          refreshControl={renderRefreshControl()}
           showsVerticalScrollIndicator={false}
-          style={{marginBottom: scale(40)}}>
-          <VideoListComponent
-            navigation={navigation}
-            title="All Videos"
-            videoUrls={videoUrls}
-            isHorizontal={true}
-          />
-          <MusicListComponent
-            navigation={navigation}
-            title="All Music"
-            songsList={songsList}
-            isHorizontal={true}
-          />
-          <PodcastListComponent
-            podcastitem={podcastitem}
-            navigation={navigation}
-            isHorizontal={true}
-            subTitle="Trending Podcasts"
-          />
-          <LiveComponent isHorizontal={true} title="Live" />
-        </ScrollView>
+          renderItem={() => (
+            <>
+              <VideoListComponent
+                navigation={navigation}
+                title="All Videos"
+                videoUrls={videoUrls}
+                isHorizontal={true}
+              />
+              <MusicListComponent
+                navigation={navigation}
+                title="All Music"
+                songsList={songsList}
+                isHorizontal={true}
+              />
+              <PodcastListComponent
+                podcastitem={podcastitem}
+                navigation={navigation}
+                isHorizontal={true}
+                subTitle="Trending Podcasts"
+              />
+              <LiveComponent isHorizontal={true} title="Live" />
+            </>
+          )}
+        />
       )}
+
       {activeTab === 'Video' && (
-        <VideoListComponent
-          navigation={navigation}
-          title="All Videos"
-          videoUrls={videoUrls}
+        <FlatList
+          data={[1]}
+          keyExtractor={() => 'video-content'}
+          refreshControl={renderRefreshControl()}
+          showsVerticalScrollIndicator={false}
+          renderItem={() => (
+            <VideoListComponent
+              navigation={navigation}
+              title="All Videos"
+              videoUrls={videoUrls}
+              isHorizontal={false}
+            />
+          )}
         />
       )}
       {activeTab === 'Music' && (
-        <MusicListComponent
-          navigation={navigation}
-          title="All Music"
-          songsList={songsList}
+        <FlatList
+          data={[1]}
+          keyExtractor={() => 'music-content'}
+          refreshControl={renderRefreshControl()}
+          showsVerticalScrollIndicator={false}
+          renderItem={() => (
+            <MusicListComponent
+              navigation={navigation}
+              title="All Music"
+              songsList={songsList}
+              isHorizontal={false}
+            />
+          )}
         />
       )}
       {activeTab === 'Podcast' && (
-        <PodcastListComponent
-          podcastitem={podcastitem}
-          navigation={navigation}
+        <FlatList
+          data={[1]}
+          keyExtractor={() => 'podcast-content'}
+          showsVerticalScrollIndicator={false}
+          refreshControl={renderRefreshControl()}
+          renderItem={() => (
+            <PodcastListComponent
+              podcastitem={podcastitem}
+              navigation={navigation}
+              isHorizontal={false}
+            />
+          )}
         />
       )}
-      {activeTab === 'Live' && <LiveScreen navigation={navigation} />}
+      {activeTab === 'Live' && (
+        <LiveScreen
+          navigation={navigation}
+          refreshControl={renderRefreshControl()}
+        />
+      )}
     </SafeAreaView>
   );
 };

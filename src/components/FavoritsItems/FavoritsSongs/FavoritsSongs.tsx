@@ -237,11 +237,11 @@ const FavoritsSongs: React.FC = () => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={addToPlaylist}
               style={styles.modalButton}>
               <Text style={styles.modalButtonText}>➕ Add to Playlist</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={deleteSong}
               style={styles.modalButtonDelete}>

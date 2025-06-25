@@ -1,8 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
+  RefreshControl,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -13,7 +14,7 @@ import {colors} from '../../styles/color';
 import ResponsiveText from '../ResponsiveText/ResponsiveText';
 import {ScreenName} from '../../constants/ScreensNames';
 import {useNavigation} from '@react-navigation/native';
-import { LiveItem } from '../../Contexts/Reducers/liveFvReducer';
+import {LiveItem} from '../../Contexts/Reducers/liveFvReducer';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
@@ -83,6 +84,14 @@ const LiveComponent: React.FC<LiveComponentProps> = ({
   heading,
 }) => {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  };
 
   const getThumbnail = (videoId: string) =>
     `https://img.youtube.com/vi/${videoId}/0.jpg`;
@@ -122,13 +131,12 @@ const LiveComponent: React.FC<LiveComponentProps> = ({
       <FlatList<LiveItem>
         data={LiveList}
         keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={!isHorizontal}
-        showsHorizontalScrollIndicator={isHorizontal}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+        showsVerticalScrollIndicator={!isHorizontal && false}
+        showsHorizontalScrollIndicator={isHorizontal && false}
         horizontal={isHorizontal}
         getItemLayout={!isHorizontal ? getItemLayout : undefined}
-        contentContainerStyle={[
-          styles.listContainer,
-        ]}
+        contentContainerStyle={[styles.listContainer]}
         ListFooterComponent={
           !isHorizontal
             ? () => (
@@ -149,7 +157,6 @@ const LiveComponent: React.FC<LiveComponentProps> = ({
                 ? {
                     width: screenWidth * 0.6,
                     marginRight: scale(15),
-                    
                   }
                 : {marginTop: scale(20)},
             ]}
