@@ -92,7 +92,7 @@ const VideoDetailsScreen = ({navigation}: any) => {
   }, [isFullscreen]);
 
   useEffect(() => {
-    let timer;
+    let timer: string | number | NodeJS.Timeout | undefined;
     if (showControls) {
       timer = setTimeout(() => {
         setShowControls(false);
@@ -200,7 +200,7 @@ const VideoDetailsScreen = ({navigation}: any) => {
   }, [currentIndex, RestVide, navigation]);
 
   const onStateChange = useCallback(
-    state => {
+    (state: string) => {
       if (state === 'playing') setPlaying(true);
       if (state === 'paused') setPlaying(false);
       if (state === 'ended') handleNextVideo();

@@ -78,6 +78,7 @@ interface LiveComponentProps {
   title: string;
 }
 
+
 const LiveComponent: React.FC<LiveComponentProps> = ({
   isHorizontal = false,
   title,
@@ -131,7 +132,9 @@ const LiveComponent: React.FC<LiveComponentProps> = ({
       <FlatList<LiveItem>
         data={LiveList}
         keyExtractor={item => item.id.toString()}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsVerticalScrollIndicator={!isHorizontal && false}
         showsHorizontalScrollIndicator={isHorizontal && false}
         horizontal={isHorizontal}

@@ -1,62 +1,70 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-  FlatList,
   Animated,
+  Dimensions,
+  FlatList,
   Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Video from 'react-native-video';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Slider from '@react-native-community/slider';
-import {scale} from 'react-native-size-matters';
-import {colors} from '../../../styles/color';
+import { scale } from 'react-native-size-matters';
 import Like from 'react-native-vector-icons/AntDesign';
-import DisLike from 'react-native-vector-icons/AntDesign';
-import CommentIcon from 'react-native-vector-icons/MaterialIcons';
 import ShareIcon from 'react-native-vector-icons/FontAwesome';
+import CommentIcon from 'react-native-vector-icons/MaterialIcons';
+import Video from 'react-native-video';
 import ResponsiveText from '../../../components/ResponsiveText/ResponsiveText';
-import {PNG_IMG} from '../../../constants/ImagesName';
-const {height, width} = Dimensions.get('window');
+import { PNG_IMG } from '../../../constants/ImagesName';
+import { colors } from '../../../styles/color';
 
-const videos = [
+const { height, width } = Dimensions.get('window');
+
+const Shortvideos = [
   {
     id: '1',
     uri: require('../../../assets/videos/video.mp4'),
     likes: 138000,
     comments: 488,
+    title: 'Epic Adventure',
+    caption: 'Exploring the wild!',
   },
   {
     id: '2',
     uri: require('../../../assets/videos/video1.mp4'),
     likes: 138000,
     comments: 488,
+    title: 'City Vibes',
+    caption: 'Urban exploration at its best.',
   },
   {
     id: '3',
     uri: require('../../../assets/videos/video2.mp4'),
     likes: 138000,
     comments: 488,
+    title: 'Nature Bliss',
+    caption: 'Chasing waterfalls.',
   },
   {
     id: '4',
     uri: require('../../../assets/videos/video3.mp4'),
     likes: 138000,
     comments: 488,
+    title: 'Dance Fever',
+    caption: 'Grooving to the beat!',
   },
   {
     id: '5',
     uri: require('../../../assets/videos/video4.mp4'),
     likes: 138000,
     comments: 488,
+    title: 'Foodie Heaven',
+    caption: 'Tasty treats await!',
   },
 ];
 
 const VideoItem = React.memo(
-  ({item, paused, togglePlayPause, iconOpacity}: any) => {
+  ({ item, isCurrent, paused, togglePlayPause, iconOpacity, videoRef }:any) => {
     const [like, setLike] = useState(false);
 
     return (
@@ -69,30 +77,27 @@ const VideoItem = React.memo(
             source={item.uri}
             style={styles.video}
             resizeMode="cover"
-            paused={paused}
+            paused={!isCurrent || paused}
             repeat
+            ref={videoRef}
           />
           <Animated.View
-            style={[styles.playPauseIconContainer, {opacity: iconOpacity}]}>
-            <Icon
-              name={paused ? 'play' : 'pause'}
+            style={[styles.playPauseIconContainer, { opacity: iconOpacity }]}>
+            <ShareIcon
+              name={paused || !isCurrent ? 'play' : 'pause'}
               size={scale(40)}
               color="white"
-              style={{marginLeft:paused ? scale(10):0}}
+              style={{ marginLeft: paused || !isCurrent ? scale(10) : 0 }}
             />
           </Animated.View>
         </TouchableOpacity>
 
         {/* Like Button */}
-        <View style={[styles.iconButton, {bottom: '42%'}]}>
+        <View style={[styles.iconButton, { bottom: '42%' }]}>
           <TouchableOpacity
             onPress={() => setLike(!like)}
             activeOpacity={0.8}
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              padding: scale(8),
-              borderRadius: scale(20),
-            }}>
+            style={styles.iconWrapper}>
             <Like
               name={like ? 'like1' : 'like2'}
               size={26}
@@ -100,77 +105,60 @@ const VideoItem = React.memo(
             />
           </TouchableOpacity>
           <ResponsiveText
-            title="Like"
+            title={`${(item.likes / 1000).toFixed(1)}k`}
             fontColor={colors.white}
             fontWeight="600"
-            fontStyle={{marginLeft: scale(5), marginTop: scale(2)}}
+            fontStyle={{ marginLeft: scale(5), marginTop: scale(2) }}
           />
         </View>
 
         {/* Comment Button */}
-        <View style={[styles.iconButton, {bottom: '30%'}]}>
+        <View style={[styles.iconButton, { bottom: '30%' }]}>
           <TouchableOpacity
             activeOpacity={0.8}
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              padding: scale(8),
-              borderRadius: scale(20),
-            }}>
+            style={styles.iconWrapper}>
             <CommentIcon name="comment" size={26} color={colors.white} />
           </TouchableOpacity>
           <ResponsiveText
-            title="Like"
+            title={`${item.comments}`}
             fontColor={colors.white}
             fontWeight="600"
-            fontStyle={{marginLeft: scale(5), marginTop: scale(2)}}
+            fontStyle={{ marginLeft: scale(5), marginTop: scale(2) }}
           />
         </View>
 
         {/* Share Button */}
-        <View style={[styles.iconButton, {bottom: '18%'}]}>
+        <View style={[styles.iconButton, { bottom: '18%' }]}>
           <TouchableOpacity
             activeOpacity={0.8}
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              padding: scale(8),
-              borderRadius: scale(20),
-            }}>
+            style={styles.iconWrapper}>
             <ShareIcon name="share" size={26} color={colors.white} />
           </TouchableOpacity>
           <ResponsiveText
-            title="Like"
+            title="Share"
             fontColor={colors.white}
             fontWeight="600"
-            fontStyle={{marginLeft: scale(5), marginTop: scale(2)}}
+            fontStyle={{ marginLeft: scale(5), marginTop: scale(2) }}
           />
         </View>
-        <View
-          style={{
-            position: 'absolute',
-            left: scale(10),
-            bottom: '20%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: scale(10),
-          }}>
+
+        {/* Profile and Title */}
+        <View style={styles.profileContainer}>
           <Image
             source={PNG_IMG.VIRAT_PNG}
-            style={{
-              height: scale(32),
-              width: scale(32),
-              borderRadius: scale(20),
-            }}
+            style={styles.profileImage}
           />
           <ResponsiveText
-            title="this is title"
+            title={item.title}
             fontColor={colors.white}
             fontSize={16}
           />
         </View>
 
-        <View style={{position: 'absolute', left: scale(10), bottom: '16%'}}>
+        {/* Caption */}
+        <View style={styles.captionContainer}>
           <ResponsiveText
-            title="this is caption"
+            title={item.caption}
             fontColor={colors.white}
             fontSize={18}
           />
@@ -182,58 +170,73 @@ const VideoItem = React.memo(
 
 const ShortsScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [paused, setPaused] = useState(true);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [like, setLike] = useState(false);
-  const iconOpacity = useRef(new Animated.Value(1)).current;
-  const videoRefs = useRef(videos.map(() => React.createRef())); // Initialize refs for each video
+  const [isTabFocused, setIsTabFocused] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const iconOpacity = useRef(new Animated.Value(0)).current;
+  const videoRefs = useRef(Shortvideos.map(() => React.createRef())).current;
 
-  const togglePlayPause = () => {
-    setPaused(!paused);
-    iconOpacity.setValue(1);
+  // Handle tab focus to pause/play videos
+  useFocusEffect(
+    useCallback(() => {
+      setIsTabFocused(true);
+      setPaused(false);
+      return () => {
+        setIsTabFocused(false);
+        setPaused(true);
+      };
+    }, []),
+  );
+
+  const togglePlayPause = useCallback(() => {
+    setPaused(prev => !prev);
     Animated.timing(iconOpacity, {
       toValue: 1,
-      duration: 1000,
+      duration: 200,
       useNativeDriver: true,
-    }).start();
-  };
+    }).start(() => {
+      Animated.timing(iconOpacity, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, [iconOpacity]);
 
-  const handleSeek = (time, totalDuration = duration) => {
-    setCurrentTime(time);
-    setDuration(totalDuration);
+  const handleViewableItemsChanged = useRef(
+    ({ viewableItems }) => {
+      if (viewableItems.length > 0) {
+        const index = viewableItems[0].index;
+        setCurrentIndex(index);
+        setPaused(false); // Auto-play when new video is in view
+      }
+    },
+  ).current;
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 80,
   };
 
   const renderItem = useCallback(
-    ({item, index}) => {
-      const videoRef = videoRefs.current[index]; // Get the ref for the current video
-
-      return (
-        <VideoItem
-          item={item}
-          paused={paused && index === currentIndex}
-          togglePlayPause={togglePlayPause}
-          iconOpacity={iconOpacity}
-          handleLike={() => console.log('Liked:', item.id)}
-          handleDislike={() => console.log('Disliked:', item.id)}
-          currentTime={currentTime}
-          duration={duration}
-          handleSeek={handleSeek}
-          videoRef={videoRef}
-          like={like}
-          setLike={setLike}
-        />
-      );
-    },
-    [paused, currentIndex, currentTime, duration],
+    ({ item, index }) => (
+      <VideoItem  
+        item={item}
+        isCurrent={index === currentIndex && isTabFocused}
+        paused={paused}
+        togglePlayPause={togglePlayPause}
+        iconOpacity={iconOpacity}
+        videoRef={videoRefs[index]}
+      />
+    ),
+    [currentIndex, isTabFocused, paused, togglePlayPause, iconOpacity],
   );
 
   return (
     <FlatList
-      data={videos}
+      data={Shortvideos}
       keyExtractor={item => item.id}
       renderItem={renderItem}
       pagingEnabled
+      contentContainerStyle={{flexGrow:1}}
       showsVerticalScrollIndicator={false}
       getItemLayout={(data, index) => ({
         length: height,
@@ -241,19 +244,12 @@ const ShortsScreen = () => {
         index,
       })}
       windowSize={3}
-      initialNumToRender={3}
-      maxToRenderPerBatch={3}
-      onScroll={event =>
-        setCurrentIndex(Math.round(event.nativeEvent.contentOffset.y / height))
-      }
+      initialNumToRender={2}
+      maxToRenderPerBatch={2}
+      onViewableItemsChanged={handleViewableItemsChanged}
+      viewabilityConfig={viewabilityConfig}
     />
   );
-};
-
-const formatTime = time => {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
 const styles = StyleSheet.create({
@@ -270,7 +266,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  video: {height: '100%', width: '100%'},
+  video: {
+    height: '100%',
+    width: '100%',
+     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   playPauseIconContainer: {
     position: 'absolute',
     justifyContent: 'center',
@@ -280,22 +284,33 @@ const styles = StyleSheet.create({
     height: scale(80),
     borderRadius: scale(40),
   },
-  sliderContainer: {
-    position: 'absolute',
-    bottom: scale(80),
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: scale(10),
-  },
-  slider: {flex: 1, marginHorizontal: scale(10), width: '100%'},
-  timeText: {color: colors.white, fontSize: scale(10)},
   iconButton: {
     position: 'absolute',
     right: scale(10),
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
     padding: scale(8),
     borderRadius: scale(20),
+  },
+  profileContainer: {
+    position: 'absolute',
+    left: scale(10),
+    bottom: '20%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(10),
+  },
+  profileImage: {
+    height: scale(32),
+    width: scale(32),
+    borderRadius: scale(20),
+  },
+  captionContainer: {
+    position: 'absolute',
+    left: scale(10),
+    bottom: '16%',
   },
 });
 

@@ -42,13 +42,16 @@ const PodcastListComponent: React.FC<PodcastListProps> = ({
 
   return (
     <View>
-      <ResponsiveText
-        title={title}
-        fontSize={14}
-        fontColor={colors.white} // ✅ Changed from gray to white
-        fontWeight="600"
-        fontStyle={{marginTop: isHorizontal ? scale(20) : 0}}
-      />
+      {!isHorizontal && !!title && (
+  <ResponsiveText
+    title={title}
+    fontSize={14}
+    fontColor={colors.white}
+    fontWeight="600"
+    fontStyle={{marginTop: scale(10)}}
+  />
+)}
+
       {/* "Most Heard In India" */}
       <View
         style={{
