@@ -1,10 +1,11 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   Animated,
   Dimensions,
   FlatList,
   Image,
+  Share,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -28,6 +29,7 @@ const Shortvideos = [
     comments: 488,
     title: 'Epic Adventure',
     caption: 'Exploring the wild!',
+    shareUrl: 'https://example.com/videos/epic-adventure',
   },
   {
     id: '2',
@@ -36,6 +38,7 @@ const Shortvideos = [
     comments: 488,
     title: 'City Vibes',
     caption: 'Urban exploration at its best.',
+    shareUrl: 'https://example.com/videos/city-vibes',
   },
   {
     id: '3',
@@ -44,6 +47,7 @@ const Shortvideos = [
     comments: 488,
     title: 'Nature Bliss',
     caption: 'Chasing waterfalls.',
+    shareUrl: 'https://example.com/videos/nature-bliss',
   },
   {
     id: '4',
@@ -52,6 +56,7 @@ const Shortvideos = [
     comments: 488,
     title: 'Dance Fever',
     caption: 'Grooving to the beat!',
+    shareUrl: 'https://example.com/videos/dance-fever',
   },
   {
     id: '5',
@@ -60,12 +65,26 @@ const Shortvideos = [
     comments: 488,
     title: 'Foodie Heaven',
     caption: 'Tasty treats await!',
+    shareUrl: 'https://example.com/videos/foodie-heaven',
   },
 ];
 
 const VideoItem = React.memo(
   ({ item, isCurrent, paused, togglePlayPause, iconOpacity, videoRef }:any) => {
     const [like, setLike] = useState(false);
+
+    const onShare = async () => {
+      try {
+        const shareOptions = {
+          title: item.title,
+          message: `${item.title}: ${item.caption} Check it out at ${item.shareUrl}`,
+          url: item.shareUrl,
+        };
+        await Share.share(shareOptions);
+      } catch (error) {
+        console.warn('Share error:', error);
+      }
+    };
 
     return (
       <View style={styles.videoContainer}>
@@ -76,7 +95,7 @@ const VideoItem = React.memo(
           <Video
             source={item.uri}
             style={styles.video}
-            resizeMode="cover"
+            resizeMode="contain"
             paused={!isCurrent || paused}
             repeat
             ref={videoRef}
@@ -116,7 +135,8 @@ const VideoItem = React.memo(
         <View style={[styles.iconButton, { bottom: '30%' }]}>
           <TouchableOpacity
             activeOpacity={0.8}
-            style={styles.iconWrapper}>
+            style={styles.iconWrapper}
+            onPress={() => console.log('Open comments for:', item.id)}>
             <CommentIcon name="comment" size={26} color={colors.white} />
           </TouchableOpacity>
           <ResponsiveText
@@ -130,6 +150,7 @@ const VideoItem = React.memo(
         {/* Share Button */}
         <View style={[styles.iconButton, { bottom: '18%' }]}>
           <TouchableOpacity
+            onPress={onShare}
             activeOpacity={0.8}
             style={styles.iconWrapper}>
             <ShareIcon name="share" size={26} color={colors.white} />
@@ -175,7 +196,6 @@ const ShortsScreen = () => {
   const iconOpacity = useRef(new Animated.Value(0)).current;
   const videoRefs = useRef(Shortvideos.map(() => React.createRef())).current;
 
-  // Handle tab focus to pause/play videos
   useFocusEffect(
     useCallback(() => {
       setIsTabFocused(true);
@@ -207,7 +227,7 @@ const ShortsScreen = () => {
       if (viewableItems.length > 0) {
         const index = viewableItems[0].index;
         setCurrentIndex(index);
-        setPaused(false); // Auto-play when new video is in view
+        setPaused(false);
       }
     },
   ).current;
@@ -218,7 +238,7 @@ const ShortsScreen = () => {
 
   const renderItem = useCallback(
     ({ item, index }) => (
-      <VideoItem  
+      <VideoItem
         item={item}
         isCurrent={index === currentIndex && isTabFocused}
         paused={paused}
@@ -236,7 +256,6 @@ const ShortsScreen = () => {
       keyExtractor={item => item.id}
       renderItem={renderItem}
       pagingEnabled
-      contentContainerStyle={{flexGrow:1}}
       showsVerticalScrollIndicator={false}
       getItemLayout={(data, index) => ({
         length: height,
@@ -257,8 +276,6 @@ const styles = StyleSheet.create({
     height,
     width,
     backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   videoTouchArea: {
     height: '100%',
@@ -269,7 +286,7 @@ const styles = StyleSheet.create({
   video: {
     height: '100%',
     width: '100%',
-     position: 'absolute',
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
