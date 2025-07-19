@@ -133,7 +133,7 @@ const SongsPlayer: React.FC<SongsPlayerProps> = ({
         <View style={styles.headerStyle}>
           <TouchableOpacity activeOpacity={0.9} onPress={() => onClose()}>
             <ArrowDownIcon
-              name="chevron-thin-down"
+              name="back"
               size={scale(30)}
               color={colors.white}
             />

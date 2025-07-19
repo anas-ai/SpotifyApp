@@ -40,39 +40,39 @@ export type videoUrlType = {
 export const videoUrls: videoUrlType[] = [
   {
     id: 1,
-    link: 'https://www.youtube.com/embed/tZDR7uYgjjY',
+    link: 'https://www.youtube.com/embed/DFkt-3AyR0w',
     title:
-      'Mujtaba Aziz Naza की 2025 में बिलकुल नई दिल को छू लेने वाली Naat | Wo Noor Hai Mujassam | Viral Naat',
+      'Kabhi Rulaya Kabhi Muskura Ke Chhod Diya | Zeeshan Faizan Sabri | निगाहे यार ने पागल बना के छोड़ दिया',
   },
   {
     id: 2,
-    link: 'https://www.youtube.com/embed/KXQSDwpXd18',
+    link: 'https://www.youtube.com/embed/PkfgqSwHFYM',
     title:
-      '15th Jashne Chote Bade Sarkar 2025 || या छोटे बड़े सरकार || Junaid Sultani बदायूं उर्स 2025',
+      'Dulha Bana Hai Khwaja पंडित जी भी सुनकर झूम उठे | Chand Qadri दूल्हा बना है ख्वाजा अजमेर की बस्ती मे',
   },
   {
     id: 3,
-    link: 'https://www.youtube.com/embed/32zptW5eesU',
+    link: 'https://www.youtube.com/embed/TRhlmXx8ZI0',
     title:
-      'Mujtaba Aziz Naza की सबसे Famous Qawwali || जगत गुरु ख्वाजा मैं तोरी गली आई || Jagat Guru Khwaja',
+      'Kapasan Muharram 2025 || कपासन में मुहर्रम 2025 पर धूम धाम से निकले ताज़िये || Night Taziya Kapasan',
   },
   {
     id: 4,
-    link: 'https://www.youtube.com/embed/sE13l6FA2bI',
+    link: 'https://www.youtube.com/embed/KDorvwq5CIM',
     title:
-      'Ghous Pak Manqabat 2025 जश्न 11वी का तेरा गौस ए आज़म | Sadakat Sabri | है ये ईद ए ग़ौसुलवरा गौस ए आज़म',
+      'मुहर्रम 2025 में सारे यज़ीदी सुनकर बेचैन || Junaid Sultani || यज़ीद मुर्दाबाद हुसैन जिंदाबाद रहेगा',
   },
   {
     id: 5,
-    link: 'https://www.youtube.com/embed/YMU--pn3b40',
+    link: 'https://www.youtube.com/embed/qvv5nZdfekE',
     title:
-      'नैनन मा समाओ प्यारे ख्वाजा जी || Mujtaba Aziz Naza || Garib Nawaz New Qawwali 2025 || Chatti Sharif',
+      'Muharram पर फिलिस्तीन वासियो की पुकार || Adnan Azim Naza | Ajao Ya Hussain Bulata Hai Palestine 2025',
   },
   {
     id: 6,
-    link: 'https://www.youtube.com/embed/HGdrx8NzEQc',
+    link: 'https://www.youtube.com/embed/ZCr_lxZWxaQ',
     title:
-      'Dongri Ke Sultan के बाद एक और World Famous Qawwali Mujtaba Aziz Naza | Khwaja Khwaja Hind Ke Sultan',
+      'नया साल नया धमाका नया अंदाज़ || Junaid Sultani || Haq Nibhana Mere Hussain Ka Hai New Version 2025',
   },
 ];
 
@@ -88,43 +88,43 @@ export const songsList: song[] = [
   {
     title: 'Death Bed',
     artist: 'Powfu',
-    artwork: 'https://samplesongs.netlify.app/album-arts/death-bed.jpg',
-    url: 'https://samplesongs.netlify.app/Death%20Bed.mp3',
+    artwork: 'https://res.cloudinary.com/dbn0pogq1/image/upload/v1752725957/a0mkqwvqgonbqy02p3am.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752726737/e7dnhbwgjs4p4piblnb2.mp3',
     id: '1',
   },
   {
-    title: 'Bad Liar',
+    title: '2025 में गरीब नवाज़ की सबसे ज्यादा Viral Qawwali || Sadkat Sabri || कदम कदम पे करम तुम्हारा',
     artist: 'Imagine Dragons',
-    artwork: 'https://samplesongs.netlify.app/album-arts/bad-liar.jpg',
-    url: 'https://samplesongs.netlify.app/Bad%20Liar.mp3',
+    artwork: 'https://res.cloudinary.com/dbn0pogq1/image/upload/v1752727632/h5ckhosvrfxvhw1tviay.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752728490/xmep1qx3c3k2hkpudo2s.mp3',
     id: '2',
   },
   {
-    title: 'Faded',
+    title: 'Dil Ne Pukara Khwaja || Murad Aatish || Garib Nawaz Qawwali 2025 || Tu Hai Sahara Khwaja',
     artist: 'Alan Walker',
-    artwork: 'https://samplesongs.netlify.app/album-arts/faded.jpg',
-    url: 'https://samplesongs.netlify.app/Faded.mp3',
+    artwork: 'https://res.cloudinary.com/dbn0pogq1/image/upload/v1752727438/cq9needugg7szroytcan.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752729521/jaiibzlq4py7hbc9u0rb.mp3',
     id: '3',
   },
   {
-    title: 'Hate Me',
+    title: 'Hae Mera Dil Khwaja Tera Ho Gaya || Aamil Aarif || सोने का कलश देखा दिल खो गया New Qawwali 2025',
     artist: 'Ellie Goulding',
-    artwork: 'https://samplesongs.netlify.app/album-arts/hate-me.jpg',
-    url: 'https://samplesongs.netlify.app/Hate%20Me.mp3',
+    artwork: 'https://res.cloudinary.com/dbn0pogq1/image/upload/v1752727480/hyomflatdbozdtpep5qq.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752729914/vdewoh1mz0e2ucxvzfv2.mp3',
     id: '4',
   },
   {
-    title: 'Solo',
+    title: 'Muharram 2025 में सभी दीवाने हो गए ये Viral Qawwali सुनकर Junaid Sultani || Hussain Zindabaad Rahega',
     artist: 'Clean Bandit',
-    artwork: 'https://samplesongs.netlify.app/album-arts/solo.jpg',
-    url: 'https://samplesongs.netlify.app/Solo.mp3',
+    artwork: 'https://img.youtube.com/vi/qfHnobTs8gg/hqdefault.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752730109/krnf7pscsghsazo0tvd4.mp3',
     id: '5',
   },
   {
-    title: 'Without Me',
+    title: 'करो किरपा मोरे ख्वाजा महाराजा || Sarfaraz Chisty Qawwali 2023 || More khwaja Maharaja Qawwali 2023',
     artist: 'Halsey',
-    artwork: 'https://samplesongs.netlify.app/album-arts/without-me.jpg',
-    url: 'https://samplesongs.netlify.app/Without%20Me.mp3',
+    artwork: 'https://res.cloudinary.com/dbn0pogq1/image/upload/v1752727561/rzhvlc4dpaaxbm3jykf5.jpg',
+    url: 'https://res.cloudinary.com/dbn0pogq1/video/upload/v1752730207/ynuzsoxjbd5mapb7osqi.mp3',
     id: '6',
   },
 ];

@@ -118,7 +118,7 @@ const ProfileScreen = ({navigation}: any) => {
             {/* ✅ Profile Section */}
             <View style={styles.ProfileContainer}>
               <View style={styles.ProfileImageContainer}>
-                <Image source={PNG_IMG.VIRAT_PNG} style={styles.profileImage} />
+                <Image source={PNG_IMG.APP_LOGO_WEBP} style={styles.profileImage} />
                 <ResponsiveText
                   title="user"
                   fontColor={colors.white}

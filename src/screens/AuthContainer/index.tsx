@@ -38,84 +38,84 @@ const AuthScreen = ({navigation}: any) => {
   const handleLogin = () => {
     navigation.navigate(ScreenName.LOGIN_SCREEN);
   };
-const handleSignUpEmail = () => {
+  const handleSignUpEmail = () => {
     navigation.navigate(ScreenName.EMAIL_SIGN_UP_SCREEN);
   };
 
   return (
-    <SafeAreaView style={[globalStyles.globalContainer, ]}>
-      <CustomBackButton navigation ={navigation}/>
+    <SafeAreaView style={[globalStyles.globalContainer]}>
+      <CustomBackButton navigation={navigation} />
 
       <View style={styles.container}>
-
-      <View style={{alignItems: 'center', marginBottom: scale(40)}}>
-        <View style={styles.iconContainer}>
-          <Image source={PNG_IMG.SPOTIFY_ICON} style={styles.img} />
+        <View style={{alignItems: 'center', marginBottom: scale(40)}}>
+          <View style={styles.iconContainer}>
+            <Image source={PNG_IMG.APP_LOGO_WEBP} style={styles.img} />
+          </View>
+          <View style={styles.textContainer}>
+            <ResponsiveText
+              title="Sign up to explore"
+              fontColor={colors.white}
+              fontWeight="bold"
+              fontSize={26}
+            />
+            <ResponsiveText
+              title="Naats & Qawwalis"
+              fontColor={colors.white}
+              fontWeight="bold"
+              fontSize={26}
+            />
+          </View>
         </View>
-        <View style={styles.textContainer}>
-          <ResponsiveText
-            title="Sign up to start"
-            fontColor={colors.white}
-            fontWeight="bold"
-            fontSize={28}
+
+        <View style={styles.buttonStyleContainer}>
+          <CustomButton
+            onPress={handleSignUpEmail}
+            title="Continue with email"
+            titleStyle={styles.buttonTitleStyle}
+            buttonStyle={styles.buttonStyle}
+            disabled={false}
+            loading={false}
           />
+          <View style={{marginTop: verticalScale(10)}}>
+            {Social_Logins.map((item, index) => (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                key={index}
+                style={styles.socialButton}>
+                <View style={styles.socialButtonContent}>
+                  {item.Icon}
+                  <ResponsiveText
+                    title={item.LoginTitle}
+                    fontColor={colors.white}
+                    fontWeight="bold"
+                    fontSize={15}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={{marginTop: scale(20)}}
+          activeOpacity={0.8}
+          onPress={handleLogin}>
           <ResponsiveText
-            title="listening"
+            title="Log in"
             fontColor={colors.white}
-            fontWeight="bold"
-            fontSize={28}
+            fontWeight="600"
           />
-        </View>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.buttonStyleContainer}>
-        <CustomButton
-          onPress={handleSignUpEmail}
-          title="Continue with email"
-          titleStyle={styles.buttonTitleStyle}
-          buttonStyle={styles.buttonStyle}
-          disabled={false}
-          loading={false}
-        />
-        <View style={{marginTop: verticalScale(10)}}>
-          {Social_Logins.map((item, index) => (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              key={index}
-              style={styles.socialButton}>
-              <View style={styles.socialButtonContent}>
-                {item.Icon}
-                <ResponsiveText
-                  title={item.LoginTitle}
-                  fontColor={colors.white}
-                  fontWeight="bold"
-                  fontSize={15}
-                />
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <TouchableOpacity style={{marginTop: scale(20)}} activeOpacity={0.8} onPress={handleLogin}>
-        <ResponsiveText
-          title="Log in"
-          fontColor={colors.white}
-          fontWeight="600"
-        />
-      </TouchableOpacity>
-      </View>
-     
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    
   },
   iconContainer: {
     marginBottom: 20,
@@ -124,13 +124,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    height: scale(70),
-    width: scale(80),
-    resizeMode: 'contain',
+    height: scale(150),
+    width: scale(150),
+    resizeMode: 'center',
+    borderRadius: scale(80),
   },
   buttonStyleContainer: {
     alignItems: 'center',
-    marginTop: scale(30),
   },
   buttonTitleStyle: {
     color: colors.black,

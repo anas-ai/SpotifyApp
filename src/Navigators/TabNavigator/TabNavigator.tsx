@@ -54,11 +54,11 @@ const TabNavigator = () => {
         component={SearchScreenTab}
         options={{headerShown: false}}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={ScreenName.POST_SCREEN}
         component={PostScreen}
         options={{headerShown: false}}
-      />
+      /> */}
       <Tab.Screen
         name={ScreenName.SHORTS_VIDEO_SCREEN}
         component={ShortsVideoScreen}

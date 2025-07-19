@@ -62,14 +62,15 @@ const LoginScreen = ({ navigation }: any) => {
       <View style={styles.container}>
         <View style={{ alignItems: 'center', marginBottom: scale(40) }}>
           <View style={styles.iconContainer}>
-            <Image source={PNG_IMG.SPOTIFY_ICON} style={styles.img} />
+            <Image source={PNG_IMG.APP_LOGO_WEBP} style={styles.img} />
           </View>
           <View style={styles.textContainer}>
             <ResponsiveText
-              title="Log in to Spotify"
+              title="Log in to Deewana Sound."
               fontColor={colors.white}
               fontWeight="bold"
-              fontSize={28}
+              fontSize={24}
+              fontStyle={{marginVertical:scale(10)}}
             />
           </View>
         </View>
@@ -124,13 +125,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    height: scale(70),
-    width: scale(80),
-    resizeMode: 'contain',
+    height: scale(150),
+    width: scale(150),
+    resizeMode: 'center',
+    borderRadius: scale(80),
   },
   buttonStyleContainer: {
     alignItems: 'center',
-    marginTop: scale(30),
   },
   buttonTitleStyle: {
     color: colors.black,

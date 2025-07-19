@@ -166,7 +166,7 @@ const VideoItem = React.memo(
         {/* Profile and Title */}
         <View style={styles.profileContainer}>
           <Image
-            source={PNG_IMG.VIRAT_PNG}
+            source={PNG_IMG.APP_LOGO_WEBP}
             style={styles.profileImage}
           />
           <ResponsiveText

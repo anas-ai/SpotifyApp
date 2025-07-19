@@ -45,10 +45,10 @@ const MusicListComponent = ({
         resizeMode="contain"
       />
       <ResponsiveText
-        title={song?.title}
+        title={song?.title.length > 10 ? song?.title.slice(0,20) + '...':song.title}
         fontColor={colors.white}
         fontSize={14}
-        fontStyle={{marginVertical: verticalScale(6), textAlign: 'center'}}
+        fontStyle={{marginVertical: verticalScale(0), textAlign: 'center'}}
       />
     </TouchableOpacity>
   );

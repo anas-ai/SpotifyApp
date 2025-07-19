@@ -8,5 +8,6 @@ export const PNG_IMG = {
   THREE_DOTS_PNG:require('../assets/images/three-dots-vertical.png'),
   PAUSE_PNG:require('../assets/images/pause.png'),
   PLAYING_PNG:require('../assets/images/playing.png'),
-  VIRAT_PNG:require('../assets/images/virat.png')
+  VIRAT_PNG:require('../assets/images/virat.png'),
+  APP_LOGO_WEBP:require('../assets/images/DeevanaAppIcon.jpg')
 };
