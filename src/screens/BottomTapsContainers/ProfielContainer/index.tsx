@@ -6,6 +6,7 @@ import {
   Modal,
   SafeAreaView,
   StyleSheet,
+  Switch,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -24,10 +25,21 @@ import FavroritsPodcast from '../../../components/FavoritsItems/FavrotisPodcast/
 import FavoritsLive from '../../../components/FavoritsItems/LiveComponent/FavoritsLiveComponet';
 import {Divider} from '@rneui/themed';
 import {ScreenName} from '../../../constants/ScreensNames';
+import {useThemeStore} from '../../../store/themes';
+// import { Text } from 'react-native-svg';
+import {Text} from 'react-native';
 
 const ProfileScreen = ({navigation}: any) => {
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const {mode, setMode, resolvedTheme} = useThemeStore();
+
+  const toggleTheme = () => {
+    const newMode = mode === 'dark' ? 'light' : 'dark';
+    setMode(newMode);
+  };
+
+  const isDark = resolvedTheme === 'dark';
 
   type NavigableComponent = React.FC<{navigation: any}>;
 
@@ -93,7 +105,11 @@ const ProfileScreen = ({navigation}: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {backgroundColor: isDark ? colors.bgBlack1 : colors.white},
+      ]}>
       <View style={styles.headerStyle}>
         <TouchableOpacity
           activeOpacity={0.8}
@@ -118,7 +134,10 @@ const ProfileScreen = ({navigation}: any) => {
             {/* ✅ Profile Section */}
             <View style={styles.ProfileContainer}>
               <View style={styles.ProfileImageContainer}>
-                <Image source={PNG_IMG.APP_LOGO_WEBP} style={styles.profileImage} />
+                <Image
+                  source={PNG_IMG.APP_LOGO_WEBP}
+                  style={styles.profileImage}
+                />
                 <ResponsiveText
                   title="user"
                   fontColor={colors.white}
@@ -292,6 +311,13 @@ const ProfileScreen = ({navigation}: any) => {
               fontStyle={{marginTop: scale(18)}}
             />
           </TouchableOpacity>
+
+          <Switch
+            value={mode === 'dark'}
+            onValueChange={toggleTheme}
+            thumbColor={colors.white}
+            trackColor={{false: '#666', true: colors.ButtonColor}}
+          />
         </SafeAreaView>
       </Modal>
     </SafeAreaView>

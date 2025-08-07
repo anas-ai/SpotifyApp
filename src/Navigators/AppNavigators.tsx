@@ -8,7 +8,6 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigators = () => {
   return (
-    <NavigationContainer>
       <Stack.Navigator initialRouteName={ScreenName.SIGNUP_OR_LOGIN}>
         {AuthStack.map((item, index) => (
           <Stack.Screen
@@ -30,7 +29,6 @@ const AppNavigators = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
-    </NavigationContainer>
   );
 };
 

@@ -1,5 +1,5 @@
 import {ActivityIndicator, View, AppState} from 'react-native';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import AppNavigators from './src/Navigators/AppNavigators';
 import StatusBarComponent from './src/components/StatusBarComponent/CustomStatusBar';
 import {colors} from './src/styles/color';
@@ -7,9 +7,28 @@ import {useAuth} from './src/hooks/useAuth';
 import {globalStyles} from './src/styles/globalStyles';
 import TrackPlayer from 'react-native-track-player';
 import LottieLoader from './src/components/AnimationsComponent/LottieLoader';
+import {NavigationContainer} from '@react-navigation/native';
+import { useThemeStore } from './src/store/themes';
+import { darkTheme, lightTheme } from './src/utils/themes';
 
 const App = () => {
   const {isLoading} = useAuth();
+  const {resolvedTheme,initializeTheme} = useThemeStore();
+  const [themeLoading,setThemeLoading] = useState(true);
+
+  useEffect(()=>{
+    const loadTheme = async()=>{
+      await initializeTheme();
+      setThemeLoading(false)
+    }
+    loadTheme();
+  },[])
+
+  const appTheme = resolvedTheme === 'dark'? darkTheme : lightTheme;
+
+  
+
+  
 
   useEffect(() => {
     const initTrackPlayer = async () => {
@@ -25,14 +44,17 @@ const App = () => {
       }
     };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
 
     return () => {
       subscription.remove();
     };
   }, []);
 
-  if (isLoading) {
+  if (isLoading || themeLoading) {
     return (
       // <View
       //   style={[
@@ -41,14 +63,16 @@ const App = () => {
       //   ]}>
       //   <ActivityIndicator size="large" color={colors.ButtonColor} />
       // </View>
-      <LottieLoader/>
+      <LottieLoader />
     );
   }
 
   return (
     <View style={{flex: 1}}>
       <StatusBarComponent backgroundColor={colors.black} />
-      <AppNavigators />
+      <NavigationContainer theme={appTheme}>
+        <AppNavigators />
+      </NavigationContainer>
     </View>
   );
 };
